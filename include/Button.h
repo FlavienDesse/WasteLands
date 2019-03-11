@@ -53,6 +53,14 @@ public:
 
 	int GetInitialSizeX() { return this->sizeXInitial; }
 	int GetInitialSizeY() { return this->sizeYInitial; }
+
+	void SetActive(bool active) { this->active = active; }
+	bool GetActive() { return this->active; }
+
+	polygon GetInitialHitBox() {return this->hitBoxInitial;}
+	void SetInitialHitBox(polygon hitbox) { this->hitBoxInitial = hitBox; }
+
+
 private:
 	TextureRef texture;
 	string type;
@@ -67,6 +75,9 @@ private:
 
 	int sizeXInitial;
 	int sizeYInitial;
+
+	polygon hitBoxInitial;
+	bool active = false;
 };
 
 #endif

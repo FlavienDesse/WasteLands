@@ -4,7 +4,7 @@
 
 ProgressBar::ProgressBar(){}
 
-void ProgressBar::SetupMap(std::experimental::filesystem::v1::path & chemin)
+void ProgressBar::SetupMenu(std::experimental::filesystem::v1::path & chemin)
 {
 
 
@@ -30,7 +30,7 @@ void ProgressBar::SetupMap(std::experimental::filesystem::v1::path & chemin)
 				
 				if (is_regular_file(file) && file.extension() == ".png") {
 					Button newButton;
-
+					newButton.SetActive(true);
 
 					std::string line;
 					polygon tempPolygon;
@@ -42,6 +42,7 @@ void ProgressBar::SetupMap(std::experimental::filesystem::v1::path & chemin)
 
 					newButton.SetSizeInitialiseX(stof(line.substr(0, pos)));
 					newButton.SetSizeInitialiseY(stof(line.substr(pos + 1, line.size())));
+					
 					
 
 
@@ -57,7 +58,7 @@ void ProgressBar::SetupMap(std::experimental::filesystem::v1::path & chemin)
 					std::getline(myfile, line);
 					boost::geometry::read_wkt(line, tempPolygon);
 					newButton.SetHitbox(tempPolygon);
-
+					newButton.SetInitialHitBox(tempPolygon);
 					std::getline(myfile, line);
 					newButton.SetType(line);
 
@@ -96,7 +97,7 @@ void ProgressBar::SetupMap(std::experimental::filesystem::v1::path & chemin)
 
 	// Create our background thread, which will load the images in the queue.
 	
-	mThread = std::make_unique<std::thread>(std::bind(&ProgressBar::threadFn, this, backgroundCtx));
+	mThread = std::make_unique<std::thread>(std::bind(&ProgressBar::threadSetupMenu, this, backgroundCtx));
 }
 
 
@@ -216,6 +217,9 @@ void ProgressBar::SetupMapAndCharacter(std::experimental::filesystem::v1::path &
 					boost::geometry::read_wkt(line, tempPolygon);
 					newDec.SetHitbox(tempPolygon);
 
+					std::getline(myfile, line);
+					boost::geometry::read_wkt(line, tempPolygon);
+					newDec.SetHitboxTexture(tempPolygon);
 
 
 					this->allDecor.push_back(newDec);
@@ -243,12 +247,11 @@ void ProgressBar::SetupMapAndCharacter(std::experimental::filesystem::v1::path &
 	}
 
 	
-	std::string line;
-
-	ifstream myfile;
+	
+	
 	int pos;
 	string key, extension;
-	polygon polygonEmpty;
+	
 	
 	for (const auto & allDirectory : std::experimental::filesystem::v1::directory_iterator(getAssetDirectories()[0].u8string()+"\\Character\\"+classe    )) {
 
@@ -256,28 +259,18 @@ void ProgressBar::SetupMapAndCharacter(std::experimental::filesystem::v1::path &
 		key = allDirectory.path().u8string().substr(pos, allDirectory.path().u8string().size());
 
 
-
-
-		myfile.open(allDirectory.path().u8string() + "\\HitBox.txt");
-
-		if (myfile.is_open() != 0) {
-
 			for (const auto & entry : std::experimental::filesystem::v1::directory_iterator(allDirectory.path())) {
 
 				extension = GetFileExtension(entry.path().u8string());
 
 				if (extension == "png") {
 
-					std::getline(myfile, line);
 
 
-
-					boost::geometry::read_wkt(
-						line, polygonEmpty);
 					std::pair <ci::gl::TextureRef, polygon> temp;
-					temp.second = polygonEmpty;
 					
-					this->animation[key].push_back(temp);
+					this->mainCharacter.GetAnimation()[key].push_back(temp);
+					
 
 					mQueue.push_back(entry.path());
 
@@ -289,11 +282,7 @@ void ProgressBar::SetupMapAndCharacter(std::experimental::filesystem::v1::path &
 
 
 
-		}
-
-
-		myfile.close();
-
+		
 
 
 
@@ -312,7 +301,7 @@ void ProgressBar::SetupMapAndCharacter(std::experimental::filesystem::v1::path &
 
 	// Create our background thread, which will load the images in the queue.
 
-	mThread = std::make_unique<std::thread>(std::bind(&ProgressBar::threadFn, this, backgroundCtx));
+	mThread = std::make_unique<std::thread>(std::bind(&ProgressBar::threadSetupMapAndCharacter, this, backgroundCtx));
 }
 
 float ProgressBar::getProgress()
@@ -346,21 +335,169 @@ void ProgressBar::clean()
 	mThread.reset();
 }
 
-void ProgressBar::threadFn(gl::ContextRef ctx)
+void ProgressBar::threadSetupMapAndCharacter(gl::ContextRef ctx)
 {
 
 	
-
-	// Enable the OpenGL context.
 	ctx->makeCurrent();
 	int numberButton = 0;
 	int posAnimation = 0;
 	int numberDecor = 0;
 	string lastKey = "";
+	fstream fileHitBoxCharacter;
+	string hitBoxCharacter;
+	polygon polygonEmpty;
+	std::pair <ci::gl::TextureRef, polygon> pairEmpty;
+	
+	while (!mTerminated) {
+	
+		
+
+		
+		std::unique_lock<std::mutex> lockQueue(mQueueMutex);
+
+	
+		if (mQueue.empty())
+			continue;
+
+	
+		const auto file = mQueue.back();
+		mQueue.pop_back();
+
+		
+		lockQueue.unlock();
+
+	
+		const auto texture = gl::Texture::create(loadImage(file));
+		
+
+	
+		auto fence = gl::Sync::create();
+		fence->clientWaitSync();
+
+		
+		std::unique_lock<std::mutex> lockTextures(mTexturesMutex);
+
+		
+
+		int pos = file.u8string().find_last_of('\\') + 1;
+		string key = file.u8string().substr(pos, file.u8string().size());
+
+		int posDirectoryName = file.u8string().find_last_of('\\', pos - 2) + 1;
+		string keyDirectoryName = file.u8string().substr(posDirectoryName, pos - posDirectoryName - 1);
+
+		
+		
+		if (key == "fond.png") {
+			this->currentTextureMap = texture;
+		}
+		else if (keyDirectoryName == "Button") {
+			this->allButton[numberButton].SetTexture(texture);
+			numberButton++;
+		}
+		else if (keyDirectoryName == "Decor") {
+			this->allDecor[numberDecor].SetTexture(texture);
+			numberDecor++;
+		}
+		else  {
+			
+			if (lastKey != keyDirectoryName) {
+				fileHitBoxCharacter.close();
+				posAnimation = 0;
+				lastKey = keyDirectoryName;
+				fileHitBoxCharacter.open(file.u8string().substr(0, pos) +"\HitBox.txt");
+				
+			}
+			else {
+				posAnimation++;
+			}
+			std::getline(fileHitBoxCharacter, hitBoxCharacter);
+			boost::geometry::read_wkt(
+				hitBoxCharacter, polygonEmpty);
+
+			
+			if (keyDirectoryName == "WalkL") {
+				this->mainCharacter.GetAnimation()[keyDirectoryName][posAnimation].first = texture;
+				this->mainCharacter.GetAnimation()[keyDirectoryName][posAnimation].second = polygonEmpty;
+
+
+				this->mainCharacter.GetAnimation()["WalkB"].push_back(pairEmpty);
+				this->mainCharacter.GetAnimation()["WalkB"][posAnimation].first = texture;
+				this->mainCharacter.GetAnimation()["WalkB"][posAnimation].second = polygonEmpty;
+
+				this->mainCharacter.GetAnimation()["WalkBL"].push_back(pairEmpty);
+				this->mainCharacter.GetAnimation()["WalkBL"][posAnimation].first = texture;
+				this->mainCharacter.GetAnimation()["WalkBL"][posAnimation].second = polygonEmpty;
+
+				this->mainCharacter.GetAnimation()["WalkTL"].push_back(pairEmpty);
+				this->mainCharacter.GetAnimation()["WalkTL"][posAnimation].first = texture;
+				this->mainCharacter.GetAnimation()["WalkTL"][posAnimation].second = polygonEmpty;
+			}
+			else if (keyDirectoryName == "StandR") {
+				this->mainCharacter.GetAnimation()[keyDirectoryName][posAnimation].first = texture;
+				this->mainCharacter.GetAnimation()[keyDirectoryName][posAnimation].second = polygonEmpty;
+
+
+			}
+			else if (keyDirectoryName == "WalkR") {
+				this->mainCharacter.GetAnimation()[keyDirectoryName][posAnimation].first = texture;
+				this->mainCharacter.GetAnimation()[keyDirectoryName][posAnimation].second = polygonEmpty;
+
+				this->mainCharacter.GetAnimation()["WalkBR"].push_back(pairEmpty);
+				this->mainCharacter.GetAnimation()["WalkBR"][posAnimation].first = texture;
+				this->mainCharacter.GetAnimation()["WalkBR"][posAnimation].second = polygonEmpty;
+
+			}
+			else if (keyDirectoryName == "WalkTR") {
+				this->mainCharacter.GetAnimation()[keyDirectoryName][posAnimation].first = texture;
+				this->mainCharacter.GetAnimation()[keyDirectoryName][posAnimation].second = polygonEmpty;
+
+				this->mainCharacter.GetAnimation()["WalkT"].push_back(pairEmpty);
+				this->mainCharacter.GetAnimation()["WalkT"][posAnimation].first = texture;
+				this->mainCharacter.GetAnimation()["WalkT"][posAnimation].second = polygonEmpty;
+
+			}
+			else if (keyDirectoryName == "RunR") {
+				this->mainCharacter.GetAnimation()[keyDirectoryName][posAnimation].first = texture;
+				this->mainCharacter.GetAnimation()[keyDirectoryName][posAnimation].second = polygonEmpty;
+
+				this->mainCharacter.GetAnimation()["RunBR"].push_back(pairEmpty);
+				this->mainCharacter.GetAnimation()["RunBR"][posAnimation].first = texture;
+				this->mainCharacter.GetAnimation()["RunBR"][posAnimation].second = polygonEmpty;
+
+			}
+			else if (keyDirectoryName == "Projectile") {
+				this->mainCharacter.GetProjectile().SetTexture(texture);
+				this->mainCharacter.GetProjectile().SetHitBox(polygonEmpty);
+
+				this->mainCharacter.GetProjectile().SetSizeX(100);
+				this->mainCharacter.GetProjectile().SetSizeY(100);
+				
+			}
+			polygonEmpty.clear();
+		}
+		
+
+	
+	}
+
+	// Bye bye!
+}
+
+void ProgressBar::threadSetupMenu(gl::ContextRef ctx)
+{
+
+
+
+	// Enable the OpenGL context.
+	ctx->makeCurrent();
+	int numberButton = 0;
+	
+
 	// Now load all images one by one.
 	while (!mTerminated) {
 		// Let's first wait a little, making it easier to see how it works.
-		
+
 
 		// Make sure we're the only ones accessing the queue.
 		// The main thread might access the queue at the same time and that would be bad.
@@ -379,7 +516,7 @@ void ProgressBar::threadFn(gl::ContextRef ctx)
 
 		// Load the image.
 		const auto texture = gl::Texture::create(loadImage(file));
-		
+
 
 		// Make sure OpenGL has finished uploading it to the GPU.
 		auto fence = gl::Sync::create();
@@ -397,9 +534,6 @@ void ProgressBar::threadFn(gl::ContextRef ctx)
 		int posDirectoryName = file.u8string().find_last_of('\\', pos - 2) + 1;
 		string keyDirectoryName = file.u8string().substr(posDirectoryName, pos - posDirectoryName - 1);
 
-		int posDirectoryNameCharacter = file.u8string().find_last_of('\\', posDirectoryName - 2) + 1;
-		string keyDirectoryNameCharater = file.u8string().substr(posDirectoryNameCharacter, posDirectoryName - posDirectoryNameCharacter - 1);
-		
 		if (key == "fond.png") {
 			this->currentTextureMap = texture;
 		}
@@ -407,29 +541,14 @@ void ProgressBar::threadFn(gl::ContextRef ctx)
 			this->allButton[numberButton].SetTexture(texture);
 			numberButton++;
 		}
-		else if (keyDirectoryName == "Decor") {
-			this->allDecor[numberDecor].SetTexture(texture);
-			numberDecor++;
-		}
-		else if (keyDirectoryNameCharater == "Archer" || keyDirectoryNameCharater == "IceWizard" || keyDirectoryNameCharater == "Knight") {
-			
-			if (lastKey != keyDirectoryName) {
-				posAnimation = 0;
-				lastKey = keyDirectoryName;
-			}
-			else {
-				posAnimation++;
-			}
-				
-			this->animation[keyDirectoryName][posAnimation].first = texture;
-			
-		}
-		
+
 
 		// Note: 'lockTextures' will go out of scope and release the lock for us.
 	}
 
 	// Bye bye!
 }
+
+
 
 

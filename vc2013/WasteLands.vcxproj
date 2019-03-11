@@ -194,7 +194,9 @@
     <ClInclude Include="..\include\Map.h" />
     <ClInclude Include="..\include\Personnage.h" />
     <ClInclude Include="..\include\ProgressBar.h" />
+    <ClInclude Include="..\include\Projectile.h" />
     <ClInclude Include="..\include\Resources.h" />
+    <ClInclude Include="..\include\TextureToDraw.h" />
     <ClInclude Include="..\include\Touches.h" />
   </ItemGroup>
   <ItemGroup>
@@ -203,6 +205,8 @@
     <ClCompile Include="..\src\Map.cpp" />
     <ClCompile Include="..\src\Personnage.cpp" />
     <ClCompile Include="..\src\ProgressBar.cpp" />
+    <ClCompile Include="..\src\Projectile.cpp" />
+    <ClCompile Include="..\src\TextureToDraw.cpp" />
     <ClCompile Include="..\src\Touches.cpp" />
     <ClCompile Include="..\src\WasteLandsApp.cpp" />
   </ItemGroup>

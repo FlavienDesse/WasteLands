@@ -436,7 +436,7 @@ double Personnage::GetVelocityY() {
 	return this->velocityY;
 }
 
-map<string, vector <pair <ci::gl::TextureRef,polygon>>>   Personnage::GetAnimation() {
+map<string, vector <pair <ci::gl::TextureRef,polygon>>> &  Personnage::GetAnimation() {
 	return this->animation;
 }
 

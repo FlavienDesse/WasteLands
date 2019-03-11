@@ -8,7 +8,7 @@
 #include "cinder/app/RendererGl.h"
 #include "cinder/gl/gl.h"
 #include "Touches.h"
-
+#include "Projectile.h"
 
 #include <boost/geometry.hpp>
 #include <boost/geometry/geometries/point_xy.hpp>
@@ -39,7 +39,7 @@ typedef boost::geometry::model::polygon< point > polygon;
 class Personnage {
 public:
 	Personnage();
-	Personnage(std::experimental::filesystem::v1::path chemin,string classe,double vie=100,double vitesse=0,double vitesseAttaque=0,double degat=0,double armure=0,int  positionActualAnimation=0, double posX=0,double posY=0,int orientation=0);
+	
 	double GetVie();
 	double GetVitesse();
 	double GetVitesseAttaque();
@@ -52,7 +52,7 @@ public:
 	double GetVelocityY ();
 
 	pair <ci::gl::TextureRef, polygon>  GetActualAnimation();
-	map<string, vector <pair <ci::gl::TextureRef,polygon>>>  GetAnimation();
+	map<string, vector <pair <ci::gl::TextureRef,polygon>>>  & GetAnimation();
 	
 	void SetAnimation(map<string, vector <pair <ci::gl::TextureRef, polygon>>> animation) { this->animation = animation; }
 	int GetPositionActualAnimation();
@@ -100,6 +100,8 @@ public:
 	void SetSizeY(float sizeY);
 
 	
+	Projectile & GetProjectile() { return this->projectile; }
+
 	polygon GetHitBoxOnCurrentAnimation();
 	void SetActuelHitBoxOnCurrentAnimation();
 private:
@@ -114,9 +116,9 @@ private:
 	map<string, vector <pair <ci::gl::TextureRef,polygon>>> animation;
 	pair <ci::gl::TextureRef, polygon> actualAnimation;
 	string classe;
-	int positionActualAnimation;
+	int positionActualAnimation =0;
 	Timer clockAnimation;
-	string etatActuel;
+	string etatActuel = "StandR";
 	double posX;
 	double posY;
 	float orientation;
@@ -125,8 +127,10 @@ private:
 	double velocityX=0;
 	double velocityY=0;
 	polygon actualHitBox;
-	float sizeX;
-	float sizeY;
+	float sizeX = 150;
+	float sizeY=150;
+
+	Projectile projectile;
 };
 
 

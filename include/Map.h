@@ -18,17 +18,14 @@ using namespace gl;
 class Map {
 public:
 	Map();
-	void LoadAllFileMapPlayable(std::experimental::filesystem::v1::path & chemin);
+	
 	
 
 	TextureRef GetTextureCurrentMap();
 	vector <Decor> GetDecor();
 	void SetDecor(vector <Decor>);
 
-	vector <int> GetAllTexturePositionFront();
-	void SetAllTexurePositionFront(vector <int> allTexturePositionFront);
-	vector  <int>  GetAllTexturePositionBack();
-	void  SetAllTexturePositionBack(vector <int> allTexturePositionBack);
+	
 
 
 	void PushBackAllTexturePositionFront(int i);
