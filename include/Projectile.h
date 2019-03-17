@@ -46,7 +46,7 @@ public:
 	void SetPosY(int posY) { this->posY = posY; }
 
 	int GetSizeX() { return this->sizeX; }
-	void SetSizeX(int sizeY) { this->sizeX = sizeX; }
+	void SetSizeX(int sizeX) { this->sizeX = sizeX; }
 
 	int GetSizeY() { return this->sizeY; }
 	void SetSizeY(int sizeY) { this->sizeY = sizeY; }

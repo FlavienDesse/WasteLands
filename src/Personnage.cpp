@@ -400,8 +400,9 @@ void Personnage::SetPositionActualAnimation(int pos ) {
 		}
 		else {
 			this->positionActualAnimation = 0;
-			this->projectile[0].SetPosX(20);
-			this->projectile[0].SetPosY(20);
+			this->projectile[0].SetPosX(this->GetPosX());
+			this->projectile[0].SetPosY(this->GetPosY());
+			
 			this->pointerToAllProjectile->push_back(this->projectile[0]);
 			this->SetEtatActuel("StandR");
 		}

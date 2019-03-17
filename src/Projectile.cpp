@@ -21,5 +21,7 @@ void  Projectile::SetAtualHitBox(){
 
 	boost::geometry::read_wkt(
 		tempStringPolygon, tempPolygon);
+
 	this->actualHitBox = tempPolygon;
+	
 }

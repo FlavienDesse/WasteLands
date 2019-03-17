@@ -498,12 +498,16 @@ polygon WasteLands::TransformHitBoxInOneray(polygon Polygon) {
 
 void WasteLands::SetPositionDecor() {
 	int posErase = 0;
-	for (auto a : this->allThingToDraw) {
-		if (a.GetDontMove() == false) {
+	
+	for (int posErase = 0; posErase < this->allThingToDraw.size(); posErase++) {
+		if (this->allThingToDraw[posErase].GetDontMove() == false) {
 			this->allThingToDraw.erase(this->allThingToDraw.begin() + posErase);
+			posErase--;
 		}
-		posErase++;
+
+		
 	}
+	
 	
 	TextureToDraw temp;
 	temp.SetDontMove(false);
@@ -544,12 +548,14 @@ void WasteLands::update()
 			break;
 		case 2:
 		{
-			console() << this->mainCharacter.GetEtatActuel() << endl;
+			
 			this->mainCharacter.SetAnimationMainCharacter(this->touchPressed);
 
-			for (auto a : this->allProjectile) {
+			for (auto & a : this->allProjectile) {
 				a.SetAtualHitBox();
+				a.SetPosX(a.GetPosX() + 1);
 			}
+		
 			this->mainCharacter.SetActuelHitBoxOnCurrentAnimation();
 			bool temp = false;
 			for (auto i : this->currentMap.GetDecor()) {
@@ -603,6 +609,7 @@ void WasteLands::DrawMainMap() {
 	
 
 	for (auto i : this->allThingToDraw) {
+		
 		this->drawTex(i.GetTexture(), i.GetPos(), i.GetSize());
 		
 	}

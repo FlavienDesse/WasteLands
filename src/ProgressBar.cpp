@@ -434,10 +434,7 @@ void ProgressBar::threadSetupMapAndCharacter(gl::ContextRef ctx)
 				pos = hitBoxCharacter.find(",");
 				newProjectile.SetSizeX(stof(hitBoxCharacter.substr(0, pos)));
 				newProjectile.SetSizeY(stof(hitBoxCharacter.substr(pos + 1, hitBoxCharacter.size())));
-				std::getline(fileHitBoxCharacter, hitBoxCharacter);
-				pos = hitBoxCharacter.find(",");
-				newProjectile.SetSpeedX(stof(hitBoxCharacter.substr(0, pos)));
-				newProjectile.SetSpeedY(stof(hitBoxCharacter.substr(pos + 1, hitBoxCharacter.size())));
+				
 				std::getline(fileHitBoxCharacter, hitBoxCharacter);
 				boost::geometry::read_wkt(
 					hitBoxCharacter, polygonEmpty);
@@ -446,6 +443,7 @@ void ProgressBar::threadSetupMapAndCharacter(gl::ContextRef ctx)
 				this->allProjectileCharacter.push_back(newProjectile);
 			}
 			else {
+				
 			if (fileHitBoxCharacter.is_open()) {
 				boost::geometry::read_wkt(
 					hitBoxCharacter, polygonEmpty);
