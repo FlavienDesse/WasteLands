@@ -10,6 +10,8 @@
 #include "Button.h"
 #include "Personnage.h"
 #include <map>
+#include "ciWMFVideoPlayer.h"
+#include "Projectile.h"
 using namespace ci;
 using namespace app;
 using namespace std;
@@ -19,8 +21,8 @@ class ProgressBar
 {
 public:
 	ProgressBar();
-	void SetupMenu(std::experimental::filesystem::v1::path & chemin);
-	void SetupMapAndCharacter(std::experimental::filesystem::v1::path & chemin, string classe);
+	void SetupMenu(std::experimental::filesystem::v1::path & chemin,int pos);
+	void SetupMapAndCharacter(std::experimental::filesystem::v1::path & chemin, string classe, int pos);
 	
 	bool GetTerminated() { return this->mTerminated; }
 
@@ -33,6 +35,14 @@ public:
 	vector <Button> GetAllButton() { return this->allButton; }
 	TextureRef GetCurrentTextureMap() { return this->currentTextureMap; }
 	Personnage GetMainCharacter() { return this->mainCharacter; }
+
+	ciWMFVideoPlayer & GetVideo() { return this->Video; }
+
+	bool GetLoadedMovie() { return this->loadedMovie; }
+
+	int GetPos() { return this->pos; }
+
+	vector<Projectile> GetAllProjectileCharacter() { return this->allProjectileCharacter; }
 private:
 	void threadSetupMenu(gl::ContextRef ctx);
 	void threadSetupMapAndCharacter(gl::ContextRef ctx);
@@ -43,14 +53,17 @@ private:
 	mutable std::mutex            mQueueMutex;        
 	std::vector<gl::TextureRef> mTextures;          
 	mutable std::mutex            mTexturesMutex;      
-	bool              mTerminated = true ; 
+	bool              mTerminated = false ; 
 
 	TextureRef currentTextureMap;
 	Personnage mainCharacter;
 	
 	vector <Decor> allDecor;
 	vector <Button> allButton;
-
+	vector <Projectile> allProjectileCharacter;
+	ciWMFVideoPlayer Video;
+	bool loadedMovie;
+	int pos = 0;
 };
 
 #endif

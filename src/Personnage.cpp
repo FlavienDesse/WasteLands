@@ -393,18 +393,96 @@ void Personnage::SetPositionActualAnimation(int pos ) {
 	}
 	}
 
-	else if (this->etatActuel == "AttackR") {
+	else if (this->etatActuel == "ShotR") {
 	this->SetCanChangeAnimationn(false);
 		if (this->animation[this->etatActuel].size() - 1 > this->positionActualAnimation) {
 			this->positionActualAnimation++;
 		}
 		else {
 			this->positionActualAnimation = 0;
-
+			this->projectile[0].SetPosX(20);
+			this->projectile[0].SetPosY(20);
+			this->pointerToAllProjectile->push_back(this->projectile[0]);
 			this->SetEtatActuel("StandR");
 		}
 	}
+	else if (this->etatActuel == "ShotT") {
+	this->SetCanChangeAnimationn(false);
+	if (this->animation[this->etatActuel].size() - 1 > this->positionActualAnimation) {
+		this->positionActualAnimation++;
+	}
+	else {
+		this->positionActualAnimation = 0;
 
+		this->SetEtatActuel("StandT");
+	}
+	}
+	else if (this->etatActuel == "ShotL") {
+	this->SetCanChangeAnimationn(false);
+	if (this->animation[this->etatActuel].size() - 1 > this->positionActualAnimation) {
+		this->positionActualAnimation++;
+	}
+	else {
+		this->positionActualAnimation = 0;
+
+		this->SetEtatActuel("StandL");
+	}
+	}
+	else if (this->etatActuel == "ShotB") {
+	this->SetCanChangeAnimationn(false);
+	if (this->animation[this->etatActuel].size() - 1 > this->positionActualAnimation) {
+		this->positionActualAnimation++;
+	}
+	else {
+		this->positionActualAnimation = 0;
+
+		this->SetEtatActuel("StandB");
+	}
+	}
+	else if (this->etatActuel == "ShotTR") {
+	this->SetCanChangeAnimationn(false);
+	if (this->animation[this->etatActuel].size() - 1 > this->positionActualAnimation) {
+		this->positionActualAnimation++;
+	}
+	else {
+		this->positionActualAnimation = 0;
+
+		this->SetEtatActuel("StandTR");
+	}
+	}
+	else if (this->etatActuel == "ShotTL") {
+	this->SetCanChangeAnimationn(false);
+	if (this->animation[this->etatActuel].size() - 1 > this->positionActualAnimation) {
+		this->positionActualAnimation++;
+	}
+	else {
+		this->positionActualAnimation = 0;
+
+		this->SetEtatActuel("StandTL");
+	}
+	}
+	else if (this->etatActuel == "ShotBL") {
+	this->SetCanChangeAnimationn(false);
+	if (this->animation[this->etatActuel].size() - 1 > this->positionActualAnimation) {
+		this->positionActualAnimation++;
+	}
+	else {
+		this->positionActualAnimation = 0;
+
+		this->SetEtatActuel("StandBL");
+	}
+	}
+	else if (this->etatActuel == "ShotBR") {
+	this->SetCanChangeAnimationn(false);
+	if (this->animation[this->etatActuel].size() - 1 > this->positionActualAnimation) {
+		this->positionActualAnimation++;
+	}
+	else {
+		this->positionActualAnimation = 0;
+
+		this->SetEtatActuel("StandBR");
+	}
+	}
 	else {
 		SetCanChangeAnimationn(true);
 		if (this->animation[this->etatActuel].size() - 1 > this->positionActualAnimation) {
@@ -915,10 +993,45 @@ bool Personnage::SetRunDiagonal(std::map<int, bool> touchPressed) {
 }
 bool Personnage::Attack(std::map<int, bool> touchPressed) {
 	string etatActuel = this->GetEtatActuel();
-	if (touchPressed[this->allTouches.GetValueTouche("Attack")] == true) {
-		if (this->GetOrientation() == 0 && ((etatActuel != "AttackR") || (etatActuel == "AttackR" && (this->GetAnimation()["AttackR"].size() - 1 == this->GetPositionActualAnimation())))) {
+	if (touchPressed[this->allTouches.GetValueTouche("Shot")] == true) {
+		if (this->GetOrientation() == 0 && ((etatActuel != "ShotR") || (etatActuel == "ShotR" && (this->GetAnimation()["ShotR"].size() - 1 == this->GetPositionActualAnimation())))) {
 			this->SetOrientation(0);
-			this->SetEtatActuel("AttackR");
+			this->SetEtatActuel("ShotR");
+			this->SetPositionActualAnimation(0);
+		}
+		else if (this->GetOrientation() == 1 && ((etatActuel != "ShotT") || (etatActuel == "ShotT" && (this->GetAnimation()["ShotT"].size() - 1 == this->GetPositionActualAnimation())))) {
+			this->SetOrientation(1);
+			this->SetEtatActuel("ShotT");
+			this->SetPositionActualAnimation(0);
+		}
+		else if (this->GetOrientation() == 2 && ((etatActuel != "ShotL") || (etatActuel == "ShotL" && (this->GetAnimation()["ShotL"].size() - 1 == this->GetPositionActualAnimation())))) {
+			this->SetOrientation(2);
+			this->SetEtatActuel("ShotL");
+			this->SetPositionActualAnimation(0);
+		}
+		else if (this->GetOrientation() == 3 && ((etatActuel != "ShotB") || (etatActuel == "ShotB" && (this->GetAnimation()["ShotB"].size() - 1 == this->GetPositionActualAnimation())))) {
+			this->SetOrientation(3);
+			this->SetEtatActuel("ShotB");
+			this->SetPositionActualAnimation(0);
+		}
+		else if (this->GetOrientation() == 0.5 && ((etatActuel != "ShotTR") || (etatActuel == "ShotTR" && (this->GetAnimation()["ShotTR"].size() - 1 == this->GetPositionActualAnimation())))) {
+			this->SetOrientation(0.5);
+			this->SetEtatActuel("ShotTR");
+			this->SetPositionActualAnimation(0);
+		}
+		else if (this->GetOrientation() == 1.5 && ((etatActuel != "ShotTL") || (etatActuel == "ShotTL" && (this->GetAnimation()["ShotTL"].size() - 1 == this->GetPositionActualAnimation())))) {
+			this->SetOrientation(1.5);
+			this->SetEtatActuel("ShotTL");
+			this->SetPositionActualAnimation(0);
+		}
+		else if (this->GetOrientation() == 2.5 && ((etatActuel != "ShotBL") || (etatActuel == "ShotBL" && (this->GetAnimation()["ShotBL"].size() - 1 == this->GetPositionActualAnimation())))) {
+			this->SetOrientation(2.5);
+			this->SetEtatActuel("ShotBL");
+			this->SetPositionActualAnimation(0);
+		}
+		else if (this->GetOrientation() == 3.5 && ((etatActuel != "ShotBR") || (etatActuel == "ShotBR" && (this->GetAnimation()["ShotBR"].size() - 1 == this->GetPositionActualAnimation())))) {
+			this->SetOrientation(3.5);
+			this->SetEtatActuel("ShotBR");
 			this->SetPositionActualAnimation(0);
 		}
 		return true;
@@ -965,7 +1078,6 @@ void Personnage::SetAnimationMainCharacter(std::map<int, bool> touchPressed) {
 			this->GetClockAnimation().start();
 		}
 	}
-
 	else if (etatActuel == "JumpR" || etatActuel == "JumpL" || etatActuel == "JumpT" || etatActuel == "JumpB" || etatActuel == "JumpTL" || etatActuel == "JumpTR" || etatActuel == "JumpBL" || etatActuel == "JumpBR") {
 		if (this->GetClockAnimation().getSeconds() > (double)SPEEDANIMATIONJUMP / this->GetAnimation()[this->GetEtatActuel()].size()) {
 			this->SetPositionActualAnimation();
@@ -974,7 +1086,7 @@ void Personnage::SetAnimationMainCharacter(std::map<int, bool> touchPressed) {
 			this->GetClockAnimation().start();
 		}
 	}
-	else if (etatActuel == "AttackR") {
+	else if (etatActuel == "ShotR" || etatActuel == "ShotL" || etatActuel == "ShotB" || etatActuel == "ShotT" || etatActuel == "ShotTL" || etatActuel == "ShotTR" || etatActuel == "ShotBL" || etatActuel == "ShotBR") {
 		if (this->GetClockAnimation().getSeconds() > (double)SPEEDANIMATIONATTACK / this->GetAnimation()[this->GetEtatActuel()].size()) {
 			this->SetPositionActualAnimation();
 			this->SetActualAnimation();

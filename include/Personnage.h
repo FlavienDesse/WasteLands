@@ -31,7 +31,7 @@ using namespace std;
 #define SPEEDANIMATIONWALK 0.40
 #define SPEEDANIMATIONJUMP 0.50
 #define SPEEDANIMATIONRUN 0.50
-#define SPEEDANIMATIONATTACK 0.55
+#define SPEEDANIMATIONATTACK 0.005
 
 typedef boost::geometry::model::d2::point_xy<double> point;
 typedef boost::geometry::model::polygon< point > polygon;
@@ -100,8 +100,10 @@ public:
 	void SetSizeY(float sizeY);
 
 	
-	Projectile & GetProjectile() { return this->projectile; }
+	void SetPointerToAllProjectile(vector<Projectile> * allProjectile) { this->pointerToAllProjectile=allProjectile; }
 
+	vector<Projectile> GetProjectile() { return this->projectile; }
+	void SetProjectile(vector<Projectile> projectile) { this->projectile = projectile; }
 	polygon GetHitBoxOnCurrentAnimation();
 	void SetActuelHitBoxOnCurrentAnimation();
 private:
@@ -130,7 +132,8 @@ private:
 	float sizeX = 150;
 	float sizeY=150;
 
-	Projectile projectile;
+	vector<Projectile>* pointerToAllProjectile=NULL;
+	vector<Projectile> projectile;
 };
 
 

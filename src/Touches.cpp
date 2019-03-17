@@ -58,7 +58,7 @@ short int Touches::GetValueTouche(std::string touchesVoulues) {
 	if (touchesVoulues == "RunBR") {
 		return this->runBR;
 	}
-	if (touchesVoulues == "Attack") {
+	if (touchesVoulues == "Shot") {
 		return this->attack;
 	}
 	return 0;

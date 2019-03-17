@@ -12,6 +12,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav</Extensions>
     </Filter>
+    <Filter Include="Header Files\IncludeWMF">
+      <UniqueIdentifier>{6ecc2de4-6fef-4df6-be40-6d0cc7f198f1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\SourceWMF">
+      <UniqueIdentifier>{bc221124-7189-48f6-a5db-6f67f2896baa}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\WasteLandsApp.cpp">
@@ -38,10 +44,28 @@
     <ClCompile Include="..\src\ProgressBar.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\Projectile.cpp">
+    <ClCompile Include="..\src\TextureToDraw.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\TextureToDraw.cpp">
+    <ClCompile Include="..\WMFVIDEO\ciWMFVideoPlayerUtils.cpp">
+      <Filter>Source Files\SourceWMF</Filter>
+    </ClCompile>
+    <ClCompile Include="..\WMFVIDEO\ciWMFVideoPlayer.cpp">
+      <Filter>Source Files\SourceWMF</Filter>
+    </ClCompile>
+    <ClCompile Include="..\WMFVIDEO\presenter\PresentEngine.cpp">
+      <Filter>Source Files\SourceWMF</Filter>
+    </ClCompile>
+    <ClCompile Include="..\WMFVIDEO\presenter\Presenter.cpp">
+      <Filter>Source Files\SourceWMF</Filter>
+    </ClCompile>
+    <ClCompile Include="..\WMFVIDEO\presenter\PresenterHelpers.cpp">
+      <Filter>Source Files\SourceWMF</Filter>
+    </ClCompile>
+    <ClCompile Include="..\WMFVIDEO\presenter\scheduler.cpp">
+      <Filter>Source Files\SourceWMF</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Projectile.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -72,6 +96,75 @@
     </ClInclude>
     <ClInclude Include="..\include\Projectile.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\WMFVIDEO\presenter\common\AsyncCB.h">
+      <Filter>Header Files\IncludeWMF</Filter>
+    </ClInclude>
+    <ClInclude Include="..\WMFVIDEO\presenter\common\BufferLock.h">
+      <Filter>Header Files\IncludeWMF</Filter>
+    </ClInclude>
+    <ClInclude Include="..\WMFVIDEO\ciWMFVideoPlayer.h">
+      <Filter>Header Files\IncludeWMF</Filter>
+    </ClInclude>
+    <ClInclude Include="..\WMFVIDEO\ciWMFVideoPlayerUtils.h">
+      <Filter>Header Files\IncludeWMF</Filter>
+    </ClInclude>
+    <ClInclude Include="..\WMFVIDEO\presenter\common\ClassFactory.h">
+      <Filter>Header Files\IncludeWMF</Filter>
+    </ClInclude>
+    <ClInclude Include="..\WMFVIDEO\presenter\common\common.h">
+      <Filter>Header Files\IncludeWMF</Filter>
+    </ClInclude>
+    <ClInclude Include="..\WMFVIDEO\presenter\common\critsec.h">
+      <Filter>Header Files\IncludeWMF</Filter>
+    </ClInclude>
+    <ClInclude Include="..\WMFVIDEO\presenter\EVRPresenter.h">
+      <Filter>Header Files\IncludeWMF</Filter>
+    </ClInclude>
+    <ClInclude Include="..\WMFVIDEO\presenter\EVRPresenterUuid.h">
+      <Filter>Header Files\IncludeWMF</Filter>
+    </ClInclude>
+    <ClInclude Include="..\WMFVIDEO\presenter\common\linklist.h">
+      <Filter>Header Files\IncludeWMF</Filter>
+    </ClInclude>
+    <ClInclude Include="..\WMFVIDEO\presenter\common\logging.h">
+      <Filter>Header Files\IncludeWMF</Filter>
+    </ClInclude>
+    <ClInclude Include="..\WMFVIDEO\presenter\common\logmediatype.h">
+      <Filter>Header Files\IncludeWMF</Filter>
+    </ClInclude>
+    <ClInclude Include="..\WMFVIDEO\presenter\common\GrowArray.h">
+      <Filter>Header Files\IncludeWMF</Filter>
+    </ClInclude>
+    <ClInclude Include="..\WMFVIDEO\presenter\common\mediatype.h">
+      <Filter>Header Files\IncludeWMF</Filter>
+    </ClInclude>
+    <ClInclude Include="..\WMFVIDEO\presenter\common\mfutils.h">
+      <Filter>Header Files\IncludeWMF</Filter>
+    </ClInclude>
+    <ClInclude Include="..\WMFVIDEO\presenter\PresentEngine.h">
+      <Filter>Header Files\IncludeWMF</Filter>
+    </ClInclude>
+    <ClInclude Include="..\WMFVIDEO\presenter\Presenter.h">
+      <Filter>Header Files\IncludeWMF</Filter>
+    </ClInclude>
+    <ClInclude Include="..\WMFVIDEO\presenter\PresenterHelpers.h">
+      <Filter>Header Files\IncludeWMF</Filter>
+    </ClInclude>
+    <ClInclude Include="..\WMFVIDEO\presenter\common\PropVar.h">
+      <Filter>Header Files\IncludeWMF</Filter>
+    </ClInclude>
+    <ClInclude Include="..\WMFVIDEO\presenter\common\registry.h">
+      <Filter>Header Files\IncludeWMF</Filter>
+    </ClInclude>
+    <ClInclude Include="..\WMFVIDEO\presenter\scheduler.h">
+      <Filter>Header Files\IncludeWMF</Filter>
+    </ClInclude>
+    <ClInclude Include="..\WMFVIDEO\presenter\common\TinyMap.h">
+      <Filter>Header Files\IncludeWMF</Filter>
+    </ClInclude>
+    <ClInclude Include="..\WMFVIDEO\presenter\common\trace.h">
+      <Filter>Header Files\IncludeWMF</Filter>
     </ClInclude>
     <ClInclude Include="..\include\TextureToDraw.h">
       <Filter>Header Files</Filter>

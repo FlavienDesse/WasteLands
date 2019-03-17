@@ -25,13 +25,21 @@ public:
 	void SetPos(vec2 pos) { this->pos= pos; }
 
 	Rectf GetSize() { return this->size; }
-	void SetTexture(Rectf size) { this->size = size; }
+	void SetSize(Rectf size) { this->size = size; }
 
+	
+
+	double GetDistance() { return this->distance; }
+	void SetDistance(double distance) { this->distance = distance; }
+
+	bool GetDontMove() { return this->dontMove; }
+	void SetDontMove(bool dontMove) { this->dontMove = dontMove; }
 private:
 	ci::gl::TextureRef texture;
 	vec2 pos;
 	Rectf size;
-
+	double distance;
+	bool dontMove = true;
 };
 
 #endif

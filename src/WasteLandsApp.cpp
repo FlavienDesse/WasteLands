@@ -21,7 +21,7 @@ typedef boost::geometry::model::polygon< point > polygon;
 #include "Resources.h"
 #include "Projectile.h"
 #include "TextureToDraw.h"
-
+#include "ciWMFVideoPlayer.h"
 //0 Droite
 //1 Haut
 //2 gauche
@@ -43,7 +43,7 @@ typedef boost::geometry::model::polygon< point > polygon;
 
 */
 
-//WalkL BottomLeft LEft
+//WalkL = BottomLeft LEft
 //WalkR = Bottome BottomRight et Right
 //WalktTR = Tr Top
 //WalkTL = TL
@@ -73,7 +73,7 @@ public:
 	void draw() override;
 	void resize() override;
 	void drawTex(const ci::gl::Texture2dRef &tex, const ci::vec2 &pos, const Rectf & size);
-	bool Collision();
+	
 	void SetPositionDecor();
 	void SetCameraOutOfBound();
 	void DrawPrincipalMenu();
@@ -82,10 +82,12 @@ public:
 	void ClickOnPlay();
 	void ClickOnCredits();
 
-	void AttribAllImage();
+	void AttribAllImage(int pos);
 
 	void ResizeButton();
 	void DrawButton();
+
+	polygon TransformHitBoxInOneray(polygon Polygon);
 private:
 	std::map<int, bool> touchPressed;
 	Personnage mainCharacter;
@@ -97,6 +99,8 @@ private:
 	Map currentMap;
 	ProgressBar progressBarVar;
 	vector <TextureToDraw> allThingToDraw;
+
+	ciWMFVideoPlayer * Video = NULL;
 };
 
 
@@ -125,7 +129,7 @@ void WasteLands::ResizeButton() {
 		}
 		tempStringPolygon.pop_back();
 		tempStringPolygon += "))";
-		console() << tempStringPolygon << endl;
+	
 		boost::geometry::read_wkt(
 			tempStringPolygon, tempPolygon);
 		i.SetHitbox( tempPolygon);
@@ -134,44 +138,95 @@ void WasteLands::ResizeButton() {
 		
 		
 	}
-
+	
 }
 
 WasteLands::WasteLands() {
 	
 }
 
-void WasteLands::AttribAllImage() {
-	
-	this->currentMap.SetAllButton(this->progressBarVar.GetAllButton());
+void WasteLands::AttribAllImage(int pos) {
 	this->currentMap.SetcurrentTextureMap(this->progressBarVar.GetCurrentTextureMap());
+	switch (pos)
+	{
+	case 0:
+		this->currentMap.SetAllButton(this->progressBarVar.GetAllButton());
+		if (this->progressBarVar.GetLoadedMovie() == true) {
+			this->Video = &this->progressBarVar.GetVideo();
+
+			Video->play();
+		}
+
+		break;
+	case 2:
+		this->currentMap.SetAllButton(this->progressBarVar.GetAllButton());
+		if (this->progressBarVar.GetMainCharacter().GetAnimation().size() != 0) {
+			this->mainCharacter = this->progressBarVar.GetMainCharacter();
+			this->mainCharacter.SetActualAnimation();
+			this->mainCharacter.SetPointerToAllProjectile(&this->allProjectile);
+			this->mainCharacter.SetProjectile(this->progressBarVar.GetAllProjectileCharacter());
+			this->mainCharacter.GetClockAnimation().start();
+			this->mainCharacter.SetPosX(1);
+			this->mainCharacter.SetPosY(1);
+		}
+		if (this->progressBarVar.GetAllDecor().size() != 0) {
+
+			this->currentMap.SetDecor(this->progressBarVar.GetAllDecor());
+			for (auto i : this->currentMap.GetDecor()) {
+				TextureToDraw temp;
+
+				temp.SetDistance(boost::geometry::distance(this->TransformHitBoxInOneray(i.GetHitBoxTexture()), point(this->currentMap.GetTextureCurrentMap()->getActualWidth(), this->currentMap.GetTextureCurrentMap()->getActualHeight()*getWindowWidth())));
+				temp.SetPos(vec2(i.GetPositionX(), i.GetPositionY()));
+				temp.SetSize(Rectf(0, 0, i.GetSizeX(), i.GetSizeY()));
+				temp.SetTexture(i.GetTexture());
+				this->allThingToDraw.push_back(temp);
+			}
+		}
+		break;
+	default:
+		break;
+	}
 	
-	if (this->progressBarVar.GetMainCharacter().GetAnimation().size() != 0) {
-		this->mainCharacter = this->progressBarVar.GetMainCharacter();
-		this->mainCharacter.SetActualAnimation();
-		this->mainCharacter.GetClockAnimation().start();
-		this->mainCharacter.SetPosX(1);
-		this->mainCharacter.SetPosY(1);
-	}
-	if (this->progressBarVar.GetAllDecor().size() != 0){
-		
-		this->currentMap.SetDecor(this->progressBarVar.GetAllDecor());
-	}
+	
+	
+	
 	this->ResizeButton();
+	
+	
+		
+	
+	
+
+	
+
 }
 
 void WasteLands::resize() {
 	switch (this->actualMap)
 	{
 	case 0:
-		
+
 		this->ResizeButton();
-		
+
 		break;
 	case 1:
 
 		break;
 
+
+	case 2:
+		this->allThingToDraw.clear();
+		for (auto i : this->currentMap.GetDecor()) {
+			TextureToDraw temp;
+
+			temp.SetDistance(boost::geometry::distance(this->TransformHitBoxInOneray(i.GetHitBoxTexture()), point(this->currentMap.GetTextureCurrentMap()->getActualWidth(), this->currentMap.GetTextureCurrentMap()->getActualHeight()*getWindowWidth())));
+			temp.SetPos(vec2(i.GetPositionX(), i.GetPositionY()));
+			temp.SetSize(Rectf(0, 0, i.GetSizeX(), i.GetSizeY()));
+			temp.SetTexture(i.GetTexture());
+			this->allThingToDraw.push_back(temp);
+		}
+
+		break;
 	}
 
 }
@@ -237,9 +292,10 @@ void WasteLands::ClickOnPlay() {
 
 
 
-	this->progressBarVar.SetupMapAndCharacter(path, "Archer");
+	this->progressBarVar.SetupMapAndCharacter(path, "Archer",2);
 	
 	this->actualMap = 2;
+	this->Video->close();
 }
 void  WasteLands::ClickOnCredits() {
 	
@@ -250,11 +306,9 @@ void WasteLands::setup()
 {
 	setFrameRate(60);
 	//setFullScreen(true);
-	//setWindowPos(vec2(0, 0));
-	//setWindowSize(vec2(getDisplay()->getWidth(), getDisplay()->getHeight()));
 	std::experimental::filesystem::v1::path chemin = getAssetDirectories()[0].u8string() + "\\Map\\PrincipalMenu";
 	
-	this->progressBarVar.SetupMenu(chemin);
+	this->progressBarVar.SetupMenu(chemin,0);
 	
 	
 
@@ -399,92 +453,124 @@ void WasteLands::keyUp(KeyEvent event)
 
 
 
-bool WasteLands::Collision() {
+bool Collision(polygon first,polygon second) {
 	bool temp;
 
 
-	for (int i = 0; i < this->currentMap.GetDecor().size(); i++) {
 
-		temp = boost::geometry::intersects(this->mainCharacter.GetHitBoxOnCurrentAnimation(), this->currentMap.GetDecor()[i].GetHitBox());
-		if (temp == true) {
-			return true;
-		}
-
-
+	temp = boost::geometry::intersects(first, second);
+	if (temp == true) {
+		return true;
 	}
+
+
+	
 	return false;
 
 }
 
 
-double GetTheMaximumDistance(polygon Polygon, point Point) {
-	double maxDistance = 0;
-	double temp1;
-	point temp1;
+
+
+bool ValueCmp(TextureToDraw a, TextureToDraw b)
+{
+	return a.GetDistance() > b.GetDistance();
+}
+
+polygon WasteLands::TransformHitBoxInOneray(polygon Polygon) {
+	polygon temp;
+	string tempPoly = "POLYGON((";
 	for (auto i : Polygon.outer()) {
-		temp1 = boost::geometry::distance(point(i.x(), i.y() * getWindowWidth()), Point);
+		tempPoly += to_string(i.x());
+		tempPoly += " ";
+		tempPoly += to_string(i.y()*getWindowWidth());
 
-		if (maxDistance < temp1) {
-
-			maxDistance = temp1;
-		}
+		tempPoly += ",";
 	}
-	return maxDistance;
+	tempPoly.pop_back();
+	tempPoly += "))";
+
+	boost::geometry::read_wkt(
+		tempPoly, temp);
+	return temp;
 }
 
 
 void WasteLands::SetPositionDecor() {
-	bool temp;
-	double temp1;
-	double temp2;
-	for (auto i : this->currentMap.GetDecor()) {
-		bool temp = false;
-		temp1=GetTheMaximumDistance(i.GetHitBoxTexture(), point(0,0));
-		temp2=GetTheMaximumDistance(this->mainCharacter.GetHitBoxOnCurrentAnimation(), point(0, 0));
-		if (temp1 > temp2) {
-
+	int posErase = 0;
+	for (auto a : this->allThingToDraw) {
+		if (a.GetDontMove() == false) {
+			this->allThingToDraw.erase(this->allThingToDraw.begin() + posErase);
 		}
+		posErase++;
 	}
+	
+	TextureToDraw temp;
+	temp.SetDontMove(false);
+	temp.SetDistance(boost::geometry::distance(this->TransformHitBoxInOneray(this->mainCharacter.GetHitBoxOnCurrentAnimation()), point(this->currentMap.GetTextureCurrentMap()->getActualWidth(), this->currentMap.GetTextureCurrentMap()->getActualHeight()*getWindowWidth())));
+	temp.SetPos(vec2(this->mainCharacter.GetPosX(), this->mainCharacter.GetPosY()));
+	temp.SetSize(Rectf(0, 0,this->mainCharacter.GetSizeX(), this->mainCharacter.GetSizeY()));
+	temp.SetTexture(this->mainCharacter.GetActualAnimation().first);
+	this->allThingToDraw.push_back(temp);
+	for (auto a : this->allProjectile) {
+		TextureToDraw temp;
+		temp.SetDontMove(false);
+		temp.SetDistance(boost::geometry::distance(this->TransformHitBoxInOneray(a.GetActualHitBox()), point(this->currentMap.GetTextureCurrentMap()->getActualWidth(), this->currentMap.GetTextureCurrentMap()->getActualHeight()*getWindowWidth())));
+		temp.SetPos(vec2(a.GetPosX(), a.GetPosY()));
+		temp.SetSize(Rectf(0, 0, a.GetSizeX(), a.GetSizeY()));
+		temp.SetTexture(a.GetTexture());
+		this->allThingToDraw.push_back(temp);
+	}
+	
+
+
+	std::sort(this->allThingToDraw.begin(), this->allThingToDraw.begin()+ this->allThingToDraw.size(), ValueCmp);
+
+
+
 }
 
 
 
 void WasteLands::update()
 {
-	/*HINSTANCE hInst;
-	hInst = GetModuleHandle(NULL);
-	HCURSOR mainCursor=LoadCursor(hInst, C);*/
 	
+
 	if (this->progressBarVar.GetTerminated()) {
 		switch (this->actualMap)
 		{
 		case 0:
-
+			Video->update();
 			break;
 		case 2:
-			
-
+		{
+			console() << this->mainCharacter.GetEtatActuel() << endl;
 			this->mainCharacter.SetAnimationMainCharacter(this->touchPressed);
 
+			for (auto a : this->allProjectile) {
+				a.SetAtualHitBox();
+			}
 			this->mainCharacter.SetActuelHitBoxOnCurrentAnimation();
+			bool temp = false;
+			for (auto i : this->currentMap.GetDecor()) {
 
-			if (this->Collision() == false) {
-
+				if (temp = Collision(this->mainCharacter.GetHitBoxOnCurrentAnimation(), i.GetHitBox())) {
+					break;
+				}
+			}
+			if (temp == false) {
 				this->mainCharacter.SetPosX(this->mainCharacter.GetVelocityX() + this->mainCharacter.GetPosX());
-
 				this->mainCharacter.SetPosY(this->mainCharacter.GetVelocityY() + this->mainCharacter.GetPosY());
-			}
-			else {
 
 			}
-
 			this->mainCharacter.SetVelocityX(0);
 			this->mainCharacter.SetVelocityY(0);
 
 
+
 			this->SetPositionDecor();
 
-
+		}
 			break;
 		default:
 			break;
@@ -514,23 +600,15 @@ void WasteLands::DrawMainMap() {
 
 	Rectf size(0, 0, this->mainCharacter.GetSizeX(), this->mainCharacter.GetSizeY());
 
-	this->drawTex(this->currentMap.GetTextureCurrentMap(),vec2(0,0),Rectf(0,0,0,0));
+	
 
 	for (auto i : this->allThingToDraw) {
 		this->drawTex(i.GetTexture(), i.GetPos(), i.GetSize());
+		
 	}
+	
 
-
-	std::vector<point > points = this->mainCharacter.GetHitBoxOnCurrentAnimation().outer();
-
-	for (int a = 0; a < points.size(); a++) {
-		if (a + 1 == points.size()) {
-			gl::drawLine(vec2(points[a].x(), points[a].y()), vec2(points[0].x(), points[0].y()));
-		}
-		else {
-			gl::drawLine(vec2(points[a].x(), points[a].y()), vec2(points[a + 1].x(), points[a + 1].y()));
-		}
-	}
+	
 
 	this->DrawButton();
 
@@ -541,18 +619,21 @@ void WasteLands::DrawButton() {
 	for (auto i : this->currentMap.GetAllButton()) {
 		Rectf sizeButton(0, 0, i.GetSizeX(), i.GetSizeY());
 		vec2 pos = vec2(i.GetPosX(), i.GetPosY());
+		
 		gl::translate(pos);
 		gl::draw(i.GetTexture(), sizeButton);
-
-
+		gl::translate(-pos);
 		
+	
 
 	}
+	
 }
 
 void WasteLands::DrawPrincipalMenu() {
 	
 	
+	this->Video->draw(0, 0, getWindowWidth(), getWindowHeight());
 	Rectf size(0, 0,getWindowWidth(), getWindowHeight());
 	gl::draw(this->currentMap.GetTextureCurrentMap(), size);
 	
@@ -606,7 +687,7 @@ void WasteLands::draw()
 		}
 		else {
 			this->progressBarVar.clean();
-			this->AttribAllImage();
+			this->AttribAllImage(this->progressBarVar.GetPos());
 		}
 		
 	}

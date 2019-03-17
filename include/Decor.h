@@ -49,7 +49,7 @@ public:
 	void SetHitbox(polygon hitbox);
 	polygon GetHitBox();
 
-	void SetHitboxTexture(polygon hitboxTexture) { this->HitBoxTexture = hitBoxTexture; }
+	void SetHitboxTexture(polygon hitBoxTexture) { this->hitBoxTexture = hitBoxTexture; }
 	polygon GetHitBoxTexture() { return this->hitBoxTexture; }
 private:
 	TextureRef texture;

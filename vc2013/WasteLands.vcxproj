@@ -76,6 +76,12 @@
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>..\WMFVIDEO;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IncludePath>..\WMFVIDEO;$(IncludePath)</IncludePath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
@@ -198,6 +204,29 @@
     <ClInclude Include="..\include\Resources.h" />
     <ClInclude Include="..\include\TextureToDraw.h" />
     <ClInclude Include="..\include\Touches.h" />
+    <ClInclude Include="..\WMFVIDEO\ciWMFVideoPlayer.h" />
+    <ClInclude Include="..\WMFVIDEO\ciWMFVideoPlayerUtils.h" />
+    <ClInclude Include="..\WMFVIDEO\presenter\common\AsyncCB.h" />
+    <ClInclude Include="..\WMFVIDEO\presenter\common\BufferLock.h" />
+    <ClInclude Include="..\WMFVIDEO\presenter\common\ClassFactory.h" />
+    <ClInclude Include="..\WMFVIDEO\presenter\common\common.h" />
+    <ClInclude Include="..\WMFVIDEO\presenter\common\critsec.h" />
+    <ClInclude Include="..\WMFVIDEO\presenter\common\GrowArray.h" />
+    <ClInclude Include="..\WMFVIDEO\presenter\common\linklist.h" />
+    <ClInclude Include="..\WMFVIDEO\presenter\common\logging.h" />
+    <ClInclude Include="..\WMFVIDEO\presenter\common\logmediatype.h" />
+    <ClInclude Include="..\WMFVIDEO\presenter\common\mediatype.h" />
+    <ClInclude Include="..\WMFVIDEO\presenter\common\mfutils.h" />
+    <ClInclude Include="..\WMFVIDEO\presenter\common\PropVar.h" />
+    <ClInclude Include="..\WMFVIDEO\presenter\common\registry.h" />
+    <ClInclude Include="..\WMFVIDEO\presenter\common\TinyMap.h" />
+    <ClInclude Include="..\WMFVIDEO\presenter\common\trace.h" />
+    <ClInclude Include="..\WMFVIDEO\presenter\EVRPresenter.h" />
+    <ClInclude Include="..\WMFVIDEO\presenter\EVRPresenterUuid.h" />
+    <ClInclude Include="..\WMFVIDEO\presenter\PresentEngine.h" />
+    <ClInclude Include="..\WMFVIDEO\presenter\Presenter.h" />
+    <ClInclude Include="..\WMFVIDEO\presenter\PresenterHelpers.h" />
+    <ClInclude Include="..\WMFVIDEO\presenter\scheduler.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\Button.cpp" />
@@ -209,6 +238,12 @@
     <ClCompile Include="..\src\TextureToDraw.cpp" />
     <ClCompile Include="..\src\Touches.cpp" />
     <ClCompile Include="..\src\WasteLandsApp.cpp" />
+    <ClCompile Include="..\WMFVIDEO\ciWMFVideoPlayer.cpp" />
+    <ClCompile Include="..\WMFVIDEO\ciWMFVideoPlayerUtils.cpp" />
+    <ClCompile Include="..\WMFVIDEO\presenter\PresentEngine.cpp" />
+    <ClCompile Include="..\WMFVIDEO\presenter\Presenter.cpp" />
+    <ClCompile Include="..\WMFVIDEO\presenter\PresenterHelpers.cpp" />
+    <ClCompile Include="..\WMFVIDEO\presenter\scheduler.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

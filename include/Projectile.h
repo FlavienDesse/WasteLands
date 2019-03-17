@@ -5,8 +5,9 @@
 #include "cinder/app/App.h"
 #include "cinder/app/RendererGl.h"
 #include "cinder/gl/gl.h"
-#include <boost/geometry/geometries/polygon.hpp>
+#include <boost/geometry.hpp>
 #include <boost/geometry/geometries/point_xy.hpp>
+#include <boost/geometry/geometries/polygon.hpp>
 
 typedef boost::geometry::model::d2::point_xy<double> point;
 typedef boost::geometry::model::polygon< point > polygon;
@@ -50,9 +51,12 @@ public:
 	int GetSizeY() { return this->sizeY; }
 	void SetSizeY(int sizeY) { this->sizeY = sizeY; }
 
+	void SetAtualHitBox();
+	polygon GetActualHitBox(){ return this->actualHitBox; }
 private:
 	TextureRef texture;
 	polygon hitBox;
+	polygon actualHitBox;
 	string source;
 	double dommage;
 
