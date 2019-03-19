@@ -88,6 +88,9 @@ public:
 	void DrawButton();
 
 	polygon TransformHitBoxInOneray(polygon Polygon);
+
+	void drawProjectile(const ci::gl::Texture2dRef &tex, const ci::vec2 &pos, const Rectf & size, float orientation);
+	
 private:
 	std::map<int, bool> touchPressed;
 	Personnage mainCharacter;
@@ -515,6 +518,7 @@ void WasteLands::SetPositionDecor() {
 	temp.SetPos(vec2(this->mainCharacter.GetPosX(), this->mainCharacter.GetPosY()));
 	temp.SetSize(Rectf(0, 0,this->mainCharacter.GetSizeX(), this->mainCharacter.GetSizeY()));
 	temp.SetTexture(this->mainCharacter.GetActualAnimation().first);
+	temp.SetSource("Main character");
 	this->allThingToDraw.push_back(temp);
 	for (auto a : this->allProjectile) {
 		TextureToDraw temp;
@@ -523,6 +527,8 @@ void WasteLands::SetPositionDecor() {
 		temp.SetPos(vec2(a.GetPosX(), a.GetPosY()));
 		temp.SetSize(Rectf(0, 0, a.GetSizeX(), a.GetSizeY()));
 		temp.SetTexture(a.GetTexture());
+		temp.SetSource("Projectile");
+		temp.SetOrientation(a.GetOrientation());
 		this->allThingToDraw.push_back(temp);
 	}
 	
@@ -548,16 +554,34 @@ void WasteLands::update()
 			break;
 		case 2:
 		{
-			
+			bool temp;
 			this->mainCharacter.SetAnimationMainCharacter(this->touchPressed);
-
-			for (auto & a : this->allProjectile) {
+			for (int j = 0; j< this->allProjectile.size(); j++) {
+				bool temp = false;;
+				auto & a = this->allProjectile[j];
 				a.SetAtualHitBox();
-				a.SetPosX(a.GetPosX() + 1);
+				for (auto i : this->currentMap.GetDecor()) {
+
+					if (temp = Collision(a.GetActualHitBox(), i.GetHitBox())) {
+						this->allProjectile.erase(this->allProjectile.begin() + j);
+						--j;
+						break;
+					}
+				}
+				if (temp == false) {
+					a.SetPosX(a.GetPosX() + a.GetSpeedX());
+					a.SetPosY(a.GetPosY() + a.GetSpeedY());
+
+				}
 			}
+			
+				
+				
+				
+			temp = false;
 		
 			this->mainCharacter.SetActuelHitBoxOnCurrentAnimation();
-			bool temp = false;
+			
 			for (auto i : this->currentMap.GetDecor()) {
 
 				if (temp = Collision(this->mainCharacter.GetHitBoxOnCurrentAnimation(), i.GetHitBox())) {
@@ -609,11 +633,15 @@ void WasteLands::DrawMainMap() {
 	
 
 	for (auto i : this->allThingToDraw) {
-		
-		this->drawTex(i.GetTexture(), i.GetPos(), i.GetSize());
+		if (i.GetSource() == "Projectile") {
+			this->drawProjectile(i.GetTexture(), i.GetPos(), i.GetSize(), i.GetOrientation());
+		}
+		else {
+			this->drawTex(i.GetTexture(), i.GetPos(), i.GetSize());
+		}
+	
 		
 	}
-	
 
 	
 
@@ -698,20 +726,6 @@ void WasteLands::draw()
 		}
 		
 	}
-	if (this->currentMap.GetAllButton().size() != 0) {
-		auto i = this->currentMap.GetAllButton()[0];
-		for (int a = 0; a < i.GetHitBoxVector().size(); a++) {
-
-			if (a + 1 == i.GetHitBoxVector().size()) {
-				gl::drawLine(vec2(i.GetHitBoxVector()[a].x(), i.GetHitBoxVector()[a].y()), vec2(i.GetHitBoxVector()[0].x(), i.GetHitBoxVector()[0].y()));
-			}
-			else {
-				
-				gl::drawLine(vec2(i.GetHitBoxVector()[a].x(), i.GetHitBoxVector()[a].y()), vec2(i.GetHitBoxVector()[a + 1].x(), i.GetHitBoxVector()[a + 1].y()));
-			}
-		}
-
-	}
 	
 
 	gl::drawString("Framerate: " + to_string(getAverageFps()), vec2(0, 0), Color::white(), Font("Arial", 12));
@@ -735,6 +749,19 @@ void WasteLands::drawTex(const ci::gl::Texture2dRef &tex, const ci::vec2 &pos, c
 	
 }
 
+void WasteLands::drawProjectile(const ci::gl::Texture2dRef &tex, const ci::vec2 &pos, const Rectf & size , float orientation)
+{
+	gl::ScopedModelMatrix scpModel;
+	gl::translate(pos - vec2(size.getWidth() / 2, size.getHeight() / 2));
+	gl::rotate(orientation *- M_PI / 2);
+
+	if (size.getHeight() == 0 && size.getWidth() == 0) {
+		gl::draw(tex);
+	}
+	else {
+		gl::draw(tex, size);
+	}
+}
 
 
 

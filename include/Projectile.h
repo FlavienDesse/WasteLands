@@ -53,6 +53,9 @@ public:
 
 	void SetAtualHitBox();
 	polygon GetActualHitBox(){ return this->actualHitBox; }
+
+	float GetOrientation() { return this->orientation; }
+	void SetOrientation(float orientation) { this->orientation = orientation; }
 private:
 	TextureRef texture;
 	polygon hitBox;
@@ -68,6 +71,8 @@ private:
 
 	int sizeX;
 	int sizeY;
+
+	float orientation;
 };
 
 #endif

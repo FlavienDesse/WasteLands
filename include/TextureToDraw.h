@@ -12,6 +12,7 @@ using namespace ci;
 using namespace ci::app;
 using namespace std;
 using namespace gl;
+using namespace std;
 class TextureToDraw
 {
 public:
@@ -34,12 +35,20 @@ public:
 
 	bool GetDontMove() { return this->dontMove; }
 	void SetDontMove(bool dontMove) { this->dontMove = dontMove; }
+
+	string GetSource() { return this->source; }
+	void SetSource(string source) { this->source = source; }
+	
+	float GetOrientation() { return this->orientation; }
+	void SetOrientation(float orientation) { this->orientation = orientation; }
 private:
 	ci::gl::TextureRef texture;
 	vec2 pos;
 	Rectf size;
 	double distance;
 	bool dontMove = true;
+	string source;
+	float orientation;
 };
 
 #endif
