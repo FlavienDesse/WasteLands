@@ -56,6 +56,9 @@ public:
 
 	float GetOrientation() { return this->orientation; }
 	void SetOrientation(float orientation) { this->orientation = orientation; }
+
+	double GetStartTime() { return this->startTime; }
+	void SetStartTime(double startTime) { this->startTime = startTime; }
 private:
 	TextureRef texture;
 	polygon hitBox;
@@ -73,6 +76,8 @@ private:
 	int sizeY;
 
 	float orientation;
+
+	double startTime ;
 };
 
 #endif

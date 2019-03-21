@@ -500,14 +500,14 @@ polygon WasteLands::TransformHitBoxInOneray(polygon Polygon) {
 
 
 void WasteLands::SetPositionDecor() {
-	int posErase = 0;
+	
 	
 	for (int posErase = 0; posErase < this->allThingToDraw.size(); posErase++) {
 		if (this->allThingToDraw[posErase].GetDontMove() == false) {
 			this->allThingToDraw.erase(this->allThingToDraw.begin() + posErase);
 			posErase--;
 		}
-
+		
 		
 	}
 	
@@ -520,17 +520,28 @@ void WasteLands::SetPositionDecor() {
 	temp.SetTexture(this->mainCharacter.GetActualAnimation().first);
 	temp.SetSource("Main character");
 	this->allThingToDraw.push_back(temp);
-	for (auto a : this->allProjectile) {
-		TextureToDraw temp;
-		temp.SetDontMove(false);
-		temp.SetDistance(boost::geometry::distance(this->TransformHitBoxInOneray(a.GetActualHitBox()), point(this->currentMap.GetTextureCurrentMap()->getActualWidth(), this->currentMap.GetTextureCurrentMap()->getActualHeight()*getWindowWidth())));
-		temp.SetPos(vec2(a.GetPosX(), a.GetPosY()));
-		temp.SetSize(Rectf(0, 0, a.GetSizeX(), a.GetSizeY()));
-		temp.SetTexture(a.GetTexture());
-		temp.SetSource("Projectile");
-		temp.SetOrientation(a.GetOrientation());
-		this->allThingToDraw.push_back(temp);
+	for (int posErase = 0; posErase < this->allProjectile.size(); posErase++) {
+		auto a = this->allProjectile[posErase];
+	
+		if (-a.GetStartTime() + getElapsedSeconds() > 5.0) {
+			
+			this->allProjectile.erase(this->allProjectile.begin() + posErase);
+			posErase--;
+		}
+		else {
+			TextureToDraw temp;
+			temp.SetDontMove(false);
+			temp.SetDistance(boost::geometry::distance(this->TransformHitBoxInOneray(a.GetActualHitBox()), point(this->currentMap.GetTextureCurrentMap()->getActualWidth(), this->currentMap.GetTextureCurrentMap()->getActualHeight()*getWindowWidth())));
+			temp.SetPos(vec2(a.GetPosX(), a.GetPosY()));
+			temp.SetSize(Rectf(0, 0, a.GetSizeX(), a.GetSizeY()));
+			temp.SetTexture(a.GetTexture());
+			temp.SetSource("Projectile");
+			temp.SetOrientation(a.GetOrientation());
+			this->allThingToDraw.push_back(temp);
+		}
+		
 	}
+
 	
 
 
@@ -753,8 +764,11 @@ void WasteLands::drawProjectile(const ci::gl::Texture2dRef &tex, const ci::vec2 
 {
 	gl::ScopedModelMatrix scpModel;
 	gl::translate(pos - vec2(size.getWidth() / 2, size.getHeight() / 2));
-	gl::rotate(orientation *- M_PI / 2);
 
+
+	gl::rotate(orientation *-M_PI / 2);
+	
+	console() << pos << endl;
 	if (size.getHeight() == 0 && size.getWidth() == 0) {
 		gl::draw(tex);
 	}

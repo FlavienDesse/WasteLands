@@ -106,6 +106,9 @@ public:
 	void SetProjectile(vector<Projectile> projectile) { this->projectile = projectile; }
 	polygon GetHitBoxOnCurrentAnimation();
 	void SetActuelHitBoxOnCurrentAnimation();
+
+	void SetTypeAttack(string typeAttack) { this->typeAttack = typeAttack; }
+	string GetTypeAttack() { return this->typeAttack; }
 private:
 	double vie;
 	double vitesse;
@@ -131,7 +134,7 @@ private:
 	polygon actualHitBox;
 	float sizeX = 150;
 	float sizeY=150;
-
+	string typeAttack;
 	vector<Projectile>* pointerToAllProjectile=NULL;
 	vector<Projectile> projectile;
 };
