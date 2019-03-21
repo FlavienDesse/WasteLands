@@ -18,20 +18,7 @@ using namespace ci;
 using namespace ci::app;
 using namespace std;
 
-#define DEPLACEMENTWALKX 5
-#define DEPLACEMENTWALKY 5
-#define DEPLACEMENTJUMPWALKX 20
-#define DEPLACEMENTJUMPWALKY 20
-#define DEPLACEMENTJUMPRUNX 25
-#define DEPLACEMENTJUMPRUNY 25
-#define DEPLACEMENTRUNX 15
-#define DEPLACEMENTRUNY 15
 
-#define SPEEDANIMATIONSTAND 0.55
-#define SPEEDANIMATIONWALK 0.40
-#define SPEEDANIMATIONJUMP 0.50
-#define SPEEDANIMATIONRUN 0.50
-#define SPEEDANIMATIONATTACK 0.005
 
 typedef boost::geometry::model::d2::point_xy<double> point;
 typedef boost::geometry::model::polygon< point > polygon;
@@ -137,6 +124,24 @@ private:
 	string typeAttack;
 	vector<Projectile>* pointerToAllProjectile=NULL;
 	vector<Projectile> projectile;
+
+
+	
+	float DEPLACEMENTWALKX = 5;
+	float DEPLACEMENTWALKY = 5;
+	float DEPLACEMENTJUMPWALKX = 20;
+	float DEPLACEMENTJUMPWALKY = 20;
+	float DEPLACEMENTJUMPRUNX = 25;
+	float DEPLACEMENTJUMPRUNY = 25;
+	float DEPLACEMENTRUNX = 15;
+	float DEPLACEMENTRUNY = 15;
+
+	float SPEEDANIMATIONSTAND = 0.55;
+	float SPEEDANIMATIONWALK = 0.40;
+	float SPEEDANIMATIONJUMP = 0.50;
+	float SPEEDANIMATIONRUN = 0.50;
+	float SPEEDANIMATIONATTACK = 0.005;
+
 };
 
 

@@ -197,6 +197,7 @@
   <ItemGroup>
     <ClInclude Include="..\include\Button.h" />
     <ClInclude Include="..\include\Decor.h" />
+    <ClInclude Include="..\include\Ennemies.h" />
     <ClInclude Include="..\include\Map.h" />
     <ClInclude Include="..\include\Personnage.h" />
     <ClInclude Include="..\include\ProgressBar.h" />
@@ -231,6 +232,7 @@
   <ItemGroup>
     <ClCompile Include="..\src\Button.cpp" />
     <ClCompile Include="..\src\Decor.cpp" />
+    <ClCompile Include="..\src\Ennemies.cpp" />
     <ClCompile Include="..\src\Map.cpp" />
     <ClCompile Include="..\src\Personnage.cpp" />
     <ClCompile Include="..\src\ProgressBar.cpp" />

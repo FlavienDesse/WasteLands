@@ -22,6 +22,7 @@ typedef boost::geometry::model::polygon< point > polygon;
 #include "Projectile.h"
 #include "TextureToDraw.h"
 #include "ciWMFVideoPlayer.h"
+#include "Ennemies.h"
 //0 Droite
 //1 Haut
 //2 gauche
@@ -102,11 +103,25 @@ private:
 	Map currentMap;
 	ProgressBar progressBarVar;
 	vector <TextureToDraw> allThingToDraw;
-
+	vector <Ennemies> allEnnemies;
 	ciWMFVideoPlayer * Video = NULL;
 };
 
+void DebugDrawPolygon(polygon polygon) {
+	std::vector<point > points = polygon.outer();
 
+	for (std::vector<point>::size_type i = 0; i < points.size(); ++i)
+	{
+		if (i + 1 != points.size()) {
+			drawLine(vec2(points[i].x(), points[i].y()), vec2(points[i + 1].x(), points[i + 1].y()));
+		}
+		else {
+			drawLine(vec2(points[i].x(), points[i].y()), vec2(points[0].x(), points[0].y()));
+		}
+
+
+	}
+}
 
 void WasteLands::ResizeButton() {
 	for (auto & i : this->currentMap.GetAllButton()) {
@@ -169,8 +184,8 @@ void WasteLands::AttribAllImage(int pos) {
 			this->mainCharacter.SetPointerToAllProjectile(&this->allProjectile);
 			this->mainCharacter.SetProjectile(this->progressBarVar.GetAllProjectileCharacter());
 			this->mainCharacter.GetClockAnimation().start();
-			this->mainCharacter.SetPosX(1);
-			this->mainCharacter.SetPosY(1);
+			this->mainCharacter.SetPosX(600);
+			this->mainCharacter.SetPosY(600);
 		}
 		if (this->progressBarVar.GetAllDecor().size() != 0) {
 
@@ -576,8 +591,18 @@ void WasteLands::update()
 					if (temp = Collision(a.GetActualHitBox(), i.GetHitBox())) {
 						this->allProjectile.erase(this->allProjectile.begin() + j);
 						--j;
+						
 						break;
 					}
+				}
+				for (auto i : this->allEnnemies) {
+
+					/*if (temp = Collision(a.GetActualHitBox(), i.GetHitBox())) {
+						this->allProjectile.erase(this->allProjectile.begin() + j);
+						--j;
+
+						break;
+					}*/
 				}
 				if (temp == false) {
 					a.SetPosX(a.GetPosX() + a.GetSpeedX());
@@ -654,7 +679,12 @@ void WasteLands::DrawMainMap() {
 		
 	}
 
-	
+	//////////////////////////////DEBUG///////////////////
+
+	for (auto a : this->allProjectile) {
+		DebugDrawPolygon(a.GetActualHitBox());
+	}
+	////////////////////////////////////////////////////
 
 	this->DrawButton();
 
@@ -763,12 +793,13 @@ void WasteLands::drawTex(const ci::gl::Texture2dRef &tex, const ci::vec2 &pos, c
 void WasteLands::drawProjectile(const ci::gl::Texture2dRef &tex, const ci::vec2 &pos, const Rectf & size , float orientation)
 {
 	gl::ScopedModelMatrix scpModel;
-	gl::translate(pos - vec2(size.getWidth() / 2, size.getHeight() / 2));
-
-
-	gl::rotate(orientation *-M_PI / 2);
 	
-	console() << pos << endl;
+	gl::translate(pos );
+	gl::rotate(orientation *-M_PI / 2);
+	gl::translate(-vec2(size.getWidth() / 2, size.getHeight() / 2));
+	
+	
+	
 	if (size.getHeight() == 0 && size.getWidth() == 0) {
 		gl::draw(tex);
 	}
