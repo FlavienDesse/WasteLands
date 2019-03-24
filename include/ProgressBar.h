@@ -12,6 +12,7 @@
 #include <map>
 #include "ciWMFVideoPlayer.h"
 #include "Projectile.h"
+#include "Ennemies.h"
 using namespace ci;
 using namespace app;
 using namespace std;
@@ -22,7 +23,7 @@ class ProgressBar
 public:
 	ProgressBar();
 	void SetupMenu(std::experimental::filesystem::v1::path & chemin,int pos);
-	void SetupMapAndCharacter(std::experimental::filesystem::v1::path & chemin, string classe, int pos);
+	void SetupMapCharacterAndEnnemies(std::experimental::filesystem::v1::path & chemin, string classe, int pos);
 	
 	bool GetTerminated() { return this->mTerminated; }
 
@@ -41,11 +42,11 @@ public:
 	bool GetLoadedMovie() { return this->loadedMovie; }
 
 	int GetPos() { return this->pos; }
-
+	map<string, Ennemiesload> GetEnnemiesLoad() { return this->allEnnemies; }
 	vector<Projectile> GetAllProjectileCharacter() { return this->allProjectileCharacter; }
 private:
 	void threadSetupMenu(gl::ContextRef ctx);
-	void threadSetupMapAndCharacter(gl::ContextRef ctx);
+	void threadSetupMapCharacterAndEnnemies(gl::ContextRef ctx);
 
 	std::unique_ptr<std::thread>  mThread;             
 	size_t                        mCount{ 0 };         
@@ -57,7 +58,7 @@ private:
 
 	TextureRef currentTextureMap;
 	Personnage mainCharacter;
-	
+	map<string,Ennemiesload> allEnnemies;
 	vector <Decor> allDecor;
 	vector <Button> allButton;
 	vector <Projectile> allProjectileCharacter;

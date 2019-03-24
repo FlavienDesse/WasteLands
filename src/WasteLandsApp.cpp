@@ -103,7 +103,8 @@ private:
 	Map currentMap;
 	ProgressBar progressBarVar;
 	vector <TextureToDraw> allThingToDraw;
-	vector <Ennemies> allEnnemies;
+	map<string, Ennemiesload> allEnnemiesLoad;
+	vector<Ennemies> allEnnemies;
 	ciWMFVideoPlayer * Video = NULL;
 };
 
@@ -200,6 +201,9 @@ void WasteLands::AttribAllImage(int pos) {
 				this->allThingToDraw.push_back(temp);
 			}
 		}
+		this->allEnnemiesLoad = this->progressBarVar.GetEnnemiesLoad();
+		
+		this->allEnnemies.push_back(this->allEnnemiesLoad["Rose"].TransformEnnemiesLoadToEnnemies("Rose",this->allEnnemiesLoad["Rose"],600,600, &this->allProjectile,vec2(5,5),vec2(150,150)));
 		break;
 	default:
 		break;
@@ -310,7 +314,7 @@ void WasteLands::ClickOnPlay() {
 
 
 
-	this->progressBarVar.SetupMapAndCharacter(path, "Archer",2);
+	this->progressBarVar.SetupMapCharacterAndEnnemies(path, "Archer",2);
 	
 	this->actualMap = 2;
 	this->Video->close();
@@ -535,6 +539,7 @@ void WasteLands::SetPositionDecor() {
 	temp.SetTexture(this->mainCharacter.GetActualAnimation().first);
 	temp.SetSource("Main character");
 	this->allThingToDraw.push_back(temp);
+
 	for (int posErase = 0; posErase < this->allProjectile.size(); posErase++) {
 		auto a = this->allProjectile[posErase];
 	
@@ -557,7 +562,19 @@ void WasteLands::SetPositionDecor() {
 		
 	}
 
-	
+	for (int posErase = 0; posErase < this->allEnnemies.size(); posErase++) {
+		auto a = this->allEnnemies[posErase];
+		TextureToDraw temp;
+		temp.SetDontMove(false);
+		temp.SetDistance(boost::geometry::distance(this->TransformHitBoxInOneray(a.GetActualHitbox()), point(this->currentMap.GetTextureCurrentMap()->getActualWidth(), this->currentMap.GetTextureCurrentMap()->getActualHeight()*getWindowWidth())));
+		temp.SetPos(vec2(a.GetPos().x, a.GetPos().y));
+		temp.SetSize(Rectf(0, 0, a.GetSize().x, a.GetSize().y));
+		temp.SetTexture(a.GetCurrentTexture());
+		temp.SetSource("Ennemies");
+		this->allThingToDraw.push_back(temp);
+		
+
+	}
 
 
 	std::sort(this->allThingToDraw.begin(), this->allThingToDraw.begin()+ this->allThingToDraw.size(), ValueCmp);
@@ -609,6 +626,13 @@ void WasteLands::update()
 					a.SetPosY(a.GetPosY() + a.GetSpeedY());
 
 				}
+			}
+
+			for (int j = 0; j < this->allEnnemies.size(); j++) {
+				auto & a = this->allEnnemies[j];
+				a.SetcurrentAnimation();
+				a.SetActualHitbox();
+				
 			}
 			
 				
@@ -681,8 +705,8 @@ void WasteLands::DrawMainMap() {
 
 	//////////////////////////////DEBUG///////////////////
 
-	for (auto a : this->allProjectile) {
-		DebugDrawPolygon(a.GetActualHitBox());
+	for (auto a : this->allEnnemies) {
+		DebugDrawPolygon(a.GetActualHitbox());
 	}
 	////////////////////////////////////////////////////
 

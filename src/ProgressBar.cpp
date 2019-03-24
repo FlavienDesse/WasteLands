@@ -108,7 +108,7 @@ void ProgressBar::SetupMenu(std::experimental::filesystem::v1::path & chemin,int
 }
 
 
-void ProgressBar::SetupMapAndCharacter(std::experimental::filesystem::v1::path & chemin, string classe,int pos)
+void ProgressBar::SetupMapCharacterAndEnnemies(std::experimental::filesystem::v1::path & chemin, string classe, int pos)
 {
 
 	this->pos = pos;
@@ -183,21 +183,21 @@ void ProgressBar::SetupMapAndCharacter(std::experimental::filesystem::v1::path &
 		}
 		else if (entry.path() == chemin.u8string() + "\\Decor") {
 			fstream myfile(chemin.u8string() + "\\Decor\\HitBox.txt");
-			
+
 			for (const auto &entry2 : fs::directory_iterator(entry.path())) {
 
 				const auto &file = entry2.path();
 
 
 
-				
+
 
 
 				if (is_regular_file(file) && file.extension() == ".png") {
 					Decor newDec;
 
-					
-				
+
+
 
 					std::string line;
 					polygon tempPolygon;
@@ -223,21 +223,21 @@ void ProgressBar::SetupMapAndCharacter(std::experimental::filesystem::v1::path &
 					std::getline(myfile, line);
 					boost::geometry::read_wkt(line, tempPolygon);
 					newDec.SetHitbox(tempPolygon);
-					
+
 					std::getline(myfile, line);
 					boost::geometry::read_wkt(line, tempPolygon);
 					newDec.SetHitboxTexture(tempPolygon);
-					
-					
+
+
 					this->allDecor.push_back(newDec);
-					
+
 					tempPolygon.clear();
 					mQueue.push_back(entry2.path());
 
 					std::getline(myfile, line);
 				}
-			
-		}
+
+			}
 			myfile.close();
 		}
 		else if (entry.path().u8string() == chemin.u8string() + "\\fond.png") {
@@ -253,43 +253,43 @@ void ProgressBar::SetupMapAndCharacter(std::experimental::filesystem::v1::path &
 
 	}
 
-	
-	
-	
+
+
+
 	int posDirectory;
 	string key, extension;
-	
-	
-	for (const auto & allDirectory : std::experimental::filesystem::v1::directory_iterator(getAssetDirectories()[0].u8string()+"\\Character\\"+classe    )) {
+
+
+	for (const auto & allDirectory : std::experimental::filesystem::v1::directory_iterator(getAssetDirectories()[0].u8string() + "\\Character\\" + classe)) {
 
 		posDirectory = allDirectory.path().u8string().find_last_of('\\') + 1;
 		key = allDirectory.path().u8string().substr(posDirectory, allDirectory.path().u8string().size());
 
 
-			for (const auto & entry : std::experimental::filesystem::v1::directory_iterator(allDirectory.path())) {
+		for (const auto & entry : std::experimental::filesystem::v1::directory_iterator(allDirectory.path())) {
 
-				extension = GetFileExtension(entry.path().u8string());
+			extension = GetFileExtension(entry.path().u8string());
 
-				if (extension == "png") {
+			if (extension == "png") {
 
 
 
-					std::pair <ci::gl::TextureRef, polygon> temp;
-					
-					this->mainCharacter.GetAnimation()[key].push_back(temp);
-					
+				std::pair <ci::gl::TextureRef, polygon> temp;
 
-					mQueue.push_back(entry.path());
+				this->mainCharacter.GetAnimation()[key].push_back(temp);
 
-					
-				}
+
+				mQueue.push_back(entry.path());
+
 
 			}
 
+		}
 
 
 
-		
+
+
 
 
 
@@ -299,7 +299,38 @@ void ProgressBar::SetupMapAndCharacter(std::experimental::filesystem::v1::path &
 
 
 	}
+
+
+	for (const auto &entry : fs::directory_iterator(getAssetDirectories()[0].u8string() + "\\Ennemies")) {
+		int a = 0;
+		
+		int pos = entry.path().u8string().find_last_of('\\') + 1;
+		string keyName = entry.path().u8string().substr(pos, entry.path().u8string().size());
+		this->allEnnemies[keyName] = Ennemiesload();
+		for (const auto &entry2 : fs::directory_iterator(entry)) {
+			posDirectory = entry2.path().u8string().find_last_of('\\') + 1;
+			key = entry2.path().u8string().substr(posDirectory, entry2.path().u8string().size());
 	
+			for (const auto &entry3 : fs::directory_iterator(entry2)) {
+				extension = GetFileExtension(entry3.path().u8string());
+			
+				if (extension == "png") {
+					std::pair <ci::gl::TextureRef, polygon> temp;
+				
+					this->allEnnemies[keyName].GetAnimation()[key].push_back(temp);
+					mQueue.push_back(entry3.path());
+
+
+				}
+
+			}
+		}
+		a++;
+	}
+
+
+			
+
 	// Count the files.
 	mCount = mQueue.size();
 
@@ -308,7 +339,7 @@ void ProgressBar::SetupMapAndCharacter(std::experimental::filesystem::v1::path &
 
 	// Create our background thread, which will load the images in the queue.
 
-	mThread = std::make_unique<std::thread>(std::bind(&ProgressBar::threadSetupMapAndCharacter, this, backgroundCtx));
+	mThread = std::make_unique<std::thread>(std::bind(&ProgressBar::threadSetupMapCharacterAndEnnemies, this, backgroundCtx));
 }
 
 float ProgressBar::getProgress()
@@ -344,7 +375,7 @@ void ProgressBar::clean()
 	mThread.reset();
 }
 
-void ProgressBar::threadSetupMapAndCharacter(gl::ContextRef ctx)
+void ProgressBar::threadSetupMapCharacterAndEnnemies(gl::ContextRef ctx)
 {
 
 	
@@ -352,6 +383,7 @@ void ProgressBar::threadSetupMapAndCharacter(gl::ContextRef ctx)
 	int numberButton = 0;
 	int posAnimation = 0;
 	int numberDecor = 0;
+	int numberEnnemies = -1;
 	string lastKey = "";
 	fstream fileHitBoxCharacter;
 	string hitBoxCharacter;
@@ -395,6 +427,9 @@ void ProgressBar::threadSetupMapAndCharacter(gl::ContextRef ctx)
 		int posDirectoryName = file.u8string().find_last_of('\\', pos - 2) + 1;
 		string keyDirectoryName = file.u8string().substr(posDirectoryName, pos - posDirectoryName - 1);
 
+		int pos3 = file.u8string().find_last_of('\\', posDirectoryName - 2) + 1;
+		string key3 = file.u8string().substr(pos3, posDirectoryName - pos3 - 1);
+
 		
 		
 		if (key == "fond.png") {
@@ -410,7 +445,7 @@ void ProgressBar::threadSetupMapAndCharacter(gl::ContextRef ctx)
 			numberDecor++;
 		}
 		
-		else  {
+		else if(key3=="Archer" || key3 == "Knight" || key3 == "Wizard") {
 			
 			if (lastKey != keyDirectoryName) {
 				fileHitBoxCharacter.close();
@@ -645,6 +680,46 @@ void ProgressBar::threadSetupMapAndCharacter(gl::ContextRef ctx)
 			polygonEmpty.clear();
 			}
 			}
+		else if (key3 == "Rose") {
+		
+			if (lastKey != keyDirectoryName) {
+				fileHitBoxCharacter.close();
+				posAnimation = 0;
+				lastKey = keyDirectoryName;
+				fileHitBoxCharacter.open(file.u8string().substr(0, pos) + "\HitBox.txt");
+				
+			}
+			else {
+				posAnimation++;
+			}
+			std::getline(fileHitBoxCharacter, hitBoxCharacter);
+			if (keyDirectoryName == "Projectile") {
+				int pos;
+				Projectile newProjectile;
+				pos = hitBoxCharacter.find(",");
+				newProjectile.SetSizeX(stof(hitBoxCharacter.substr(0, pos)));
+				newProjectile.SetSizeY(stof(hitBoxCharacter.substr(pos + 1, hitBoxCharacter.size())));
+
+				std::getline(fileHitBoxCharacter, hitBoxCharacter);
+				boost::geometry::read_wkt(
+					hitBoxCharacter, polygonEmpty);
+				newProjectile.SetHitBox(polygonEmpty);
+				newProjectile.SetTexture(texture);
+				this->allEnnemies[key3].GetProjectile().push_back(newProjectile);
+			}
+			else {
+				if (fileHitBoxCharacter.is_open()) {
+					
+					boost::geometry::read_wkt(
+						hitBoxCharacter, polygonEmpty);
+					this->allEnnemies[key3].GetAnimation()[keyDirectoryName][posAnimation].first = texture;
+					this->allEnnemies[key3].GetAnimation()[keyDirectoryName][posAnimation].second = polygonEmpty;
+				}
+				
+				
+				
+			}
+		}
 			
 		
 
