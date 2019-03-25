@@ -404,7 +404,7 @@ void Personnage::SetPositionActualAnimation(int pos ) {
 			this->projectile[0].SetPosY(this->GetPosY());
 			this->projectile[0].SetSpeedX(10);
 			this->projectile[0].SetSpeedY(0);
-			this->projectile[0].SetOrientation(0);
+			this->projectile[0].SetOrientation(0 * -M_PI / 2);
 			this->projectile[0].SetSource("MainCharacter " + this->typeAttack);
 			this->projectile[0].SetStartTime(getElapsedSeconds());
 			this->pointerToAllProjectile->push_back(this->projectile[0]);
@@ -422,7 +422,7 @@ void Personnage::SetPositionActualAnimation(int pos ) {
 		this->projectile[0].SetPosY(this->GetPosY());
 		this->projectile[0].SetSpeedX(0);
 		this->projectile[0].SetSpeedY(-10);
-		this->projectile[0].SetOrientation(1);
+		this->projectile[0].SetOrientation(1*-M_PI/2);
 		this->projectile[0].SetSource("MainCharacter " + this->typeAttack);
 		this->projectile[0].SetStartTime(getElapsedSeconds());
 		this->pointerToAllProjectile->push_back(this->projectile[0]);
@@ -440,7 +440,7 @@ void Personnage::SetPositionActualAnimation(int pos ) {
 		this->projectile[0].SetPosY(this->GetPosY());
 		this->projectile[0].SetSpeedX(-10);
 		this->projectile[0].SetSpeedY(0);
-		this->projectile[0].SetOrientation(2);
+		this->projectile[0].SetOrientation(2 * -M_PI / 2);
 		this->projectile[0].SetSource("MainCharacter " + this->typeAttack);
 		this->projectile[0].SetStartTime(getElapsedSeconds());
 		this->pointerToAllProjectile->push_back(this->projectile[0]);
@@ -458,7 +458,7 @@ void Personnage::SetPositionActualAnimation(int pos ) {
 		this->projectile[0].SetPosY(this->GetPosY());
 		this->projectile[0].SetSpeedX(0);
 		this->projectile[0].SetSpeedY(10);
-		this->projectile[0].SetOrientation(3);
+		this->projectile[0].SetOrientation(3 * -M_PI / 2);
 		this->projectile[0].SetSource("MainCharacter " + this->typeAttack);
 		this->projectile[0].SetStartTime(getElapsedSeconds());
 		this->pointerToAllProjectile->push_back(this->projectile[0]);
@@ -475,7 +475,7 @@ void Personnage::SetPositionActualAnimation(int pos ) {
 		this->projectile[0].SetPosX(this->GetPosX());
 		this->projectile[0].SetPosY(this->GetPosY());
 		this->projectile[0].SetSpeedX(10);
-		this->projectile[0].SetOrientation(0.5);
+		this->projectile[0].SetOrientation(0.5*-M_PI / 2);
 		this->projectile[0].SetSpeedY(-10);
 		this->projectile[0].SetSource("MainCharacter " + this->typeAttack);
 		this->projectile[0].SetStartTime(getElapsedSeconds());
@@ -494,7 +494,7 @@ void Personnage::SetPositionActualAnimation(int pos ) {
 		this->projectile[0].SetPosY(this->GetPosY());
 		this->projectile[0].SetSpeedX(-10);
 		this->projectile[0].SetSpeedY(-10);
-		this->projectile[0].SetOrientation(1.5);
+		this->projectile[0].SetOrientation(1.5*-M_PI / 2);
 		this->projectile[0].SetSource("MainCharacter " + this->typeAttack);
 		this->projectile[0].SetStartTime(getElapsedSeconds());
 		this->pointerToAllProjectile->push_back(this->projectile[0]);
@@ -511,7 +511,7 @@ void Personnage::SetPositionActualAnimation(int pos ) {
 		this->projectile[0].SetPosX(this->GetPosX());
 		this->projectile[0].SetPosY(this->GetPosY());
 		this->projectile[0].SetSpeedX(-10);
-		this->projectile[0].SetOrientation(2.5);
+		this->projectile[0].SetOrientation(2.5*-M_PI / 2);
 		this->projectile[0].SetSpeedY(10);
 		this->projectile[0].SetSource("MainCharacter " + this->typeAttack);
 		this->projectile[0].SetStartTime(getElapsedSeconds());
@@ -529,7 +529,7 @@ void Personnage::SetPositionActualAnimation(int pos ) {
 		this->projectile[0].SetPosX(this->GetPosX());
 		this->projectile[0].SetPosY(this->GetPosY());
 		this->projectile[0].SetSpeedX(10);
-		this->projectile[0].SetOrientation(3.5);
+		this->projectile[0].SetOrientation(3.5*-M_PI / 2);
 		this->projectile[0].SetSpeedY(10);
 		this->projectile[0].SetSource("MainCharacter " + this->typeAttack);
 		this->projectile[0].SetStartTime(getElapsedSeconds());
@@ -1214,3 +1214,4 @@ void  Personnage::SetActuelHitBoxOnCurrentAnimation() {
 		tempStringPolygon, tempPolygon);
 	this->actualHitBox = tempPolygon;
 }
+

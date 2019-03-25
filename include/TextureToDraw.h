@@ -39,8 +39,8 @@ public:
 	string GetSource() { return this->source; }
 	void SetSource(string source) { this->source = source; }
 	
-	float GetOrientation() { return this->orientation; }
-	void SetOrientation(float orientation) { this->orientation = orientation; }
+	double GetOrientation() { return this->orientation; }
+	void SetOrientation(double orientation) { this->orientation = orientation; }
 private:
 	ci::gl::TextureRef texture;
 	vec2 pos;
@@ -48,7 +48,7 @@ private:
 	double distance;
 	bool dontMove = true;
 	string source;
-	float orientation;
+	double orientation;
 };
 
 #endif

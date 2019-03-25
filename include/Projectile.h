@@ -33,17 +33,17 @@ public:
 	double GetDommage() { return this->dommage; }
 	void SetDommage(double dommage) { this->dommage = dommage; }
 
-	int GetSpeedX() { return this->speedX; }
-	void SetSpeedX(double speedX) { this->speedX= speedX; }
+	int  GetSpeedX() { return this->speedX; }
+	void SetSpeedX(int  speedX) { this->speedX= speedX; }
 
-	int GetSpeedY() { return this->speedY; }
-	void SetSpeedY(double speedY) { this->speedY = speedY; }
+	int  GetSpeedY() { return this->speedY; }
+	void SetSpeedY(int  speedY) { this->speedY = speedY; }
 
-	int GetPosX() { return this->posX; }
-	void SetPosX(int posX) { this->posX = posX; }
+	double GetPosX() { return this->posX; }
+	void SetPosX(double posX) { this->posX = posX; }
 
-	int GetPosY() { return this->posY; }
-	void SetPosY(int posY) { this->posY = posY; }
+	double GetPosY() { return this->posY; }
+	void SetPosY(double posY) { this->posY = posY; }
 
 	int GetSizeX() { return this->sizeX; }
 	void SetSizeX(int sizeX) { this->sizeX = sizeX; }
@@ -54,8 +54,8 @@ public:
 	void SetAtualHitBox();
 	polygon GetActualHitBox(){ return this->actualHitBox; }
 
-	float GetOrientation() { return this->orientation; }
-	void SetOrientation(float orientation) { this->orientation = orientation; }
+	double GetOrientation() { return this->orientation; }
+	void SetOrientation(double orientation) { this->orientation = orientation; }
 
 	double GetStartTime() { return this->startTime; }
 	void SetStartTime(double startTime) { this->startTime = startTime; }
@@ -69,13 +69,13 @@ private:
 	int speedX;
 	int speedY;
 
-	int posX;
-	int posY;
+	double posX;
+	double posY;
 
 	int sizeX;
 	int sizeY;
 
-	float orientation;
+	double orientation;
 
 	double startTime ;
 };

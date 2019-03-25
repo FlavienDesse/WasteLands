@@ -599,7 +599,40 @@ void WasteLands::update()
 		{
 			bool temp;
 			this->mainCharacter.SetAnimationMainCharacter(this->touchPressed);
-			for (int j = 0; j< this->allProjectile.size(); j++) {
+			
+
+			for (int j = 0; j < this->allEnnemies.size(); j++) {
+				auto & a = this->allEnnemies[j];
+				a.SetcurrentAnimation();
+				a.SetActualHitbox();
+				a.Update(vec2(this->mainCharacter.GetPosX(), this->mainCharacter.GetPosY()));
+			}
+			
+				
+				
+				
+			temp = false;
+		
+			this->mainCharacter.SetActuelHitBoxOnCurrentAnimation();
+			if (this->mainCharacter.GetVelocityX() != 0 || this->mainCharacter.GetVelocityY() != 0) {
+				for (auto i : this->currentMap.GetDecor()) {
+
+					if (temp = Collision(this->mainCharacter.GetHitBoxOnCurrentAnimation(), i.GetHitBox())) {
+						break;
+					}
+				}
+				if (temp == false) {
+					this->mainCharacter.SetPosX(this->mainCharacter.GetVelocityX() + this->mainCharacter.GetPosX());
+					this->mainCharacter.SetPosY(this->mainCharacter.GetVelocityY() + this->mainCharacter.GetPosY());
+
+				}
+				this->mainCharacter.SetVelocityX(0);
+				this->mainCharacter.SetVelocityY(0);
+			}
+			
+		
+			
+			for (int j = 0; j < this->allProjectile.size(); j++) {
 				bool temp = false;;
 				auto & a = this->allProjectile[j];
 				a.SetAtualHitBox();
@@ -608,7 +641,7 @@ void WasteLands::update()
 					if (temp = Collision(a.GetActualHitBox(), i.GetHitBox())) {
 						this->allProjectile.erase(this->allProjectile.begin() + j);
 						--j;
-						
+
 						break;
 					}
 				}
@@ -628,36 +661,7 @@ void WasteLands::update()
 				}
 			}
 
-			for (int j = 0; j < this->allEnnemies.size(); j++) {
-				auto & a = this->allEnnemies[j];
-				a.SetcurrentAnimation();
-				a.SetActualHitbox();
-				
-			}
 			
-				
-				
-				
-			temp = false;
-		
-			this->mainCharacter.SetActuelHitBoxOnCurrentAnimation();
-			
-			for (auto i : this->currentMap.GetDecor()) {
-
-				if (temp = Collision(this->mainCharacter.GetHitBoxOnCurrentAnimation(), i.GetHitBox())) {
-					break;
-				}
-			}
-			if (temp == false) {
-				this->mainCharacter.SetPosX(this->mainCharacter.GetVelocityX() + this->mainCharacter.GetPosX());
-				this->mainCharacter.SetPosY(this->mainCharacter.GetVelocityY() + this->mainCharacter.GetPosY());
-
-			}
-			this->mainCharacter.SetVelocityX(0);
-			this->mainCharacter.SetVelocityY(0);
-
-
-
 			this->SetPositionDecor();
 
 		}
@@ -819,7 +823,7 @@ void WasteLands::drawProjectile(const ci::gl::Texture2dRef &tex, const ci::vec2 
 	gl::ScopedModelMatrix scpModel;
 	
 	gl::translate(pos );
-	gl::rotate(orientation *-M_PI / 2);
+	gl::rotate(orientation );
 	gl::translate(-vec2(size.getWidth() / 2, size.getHeight() / 2));
 	
 	

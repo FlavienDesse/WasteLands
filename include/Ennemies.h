@@ -16,6 +16,7 @@ using namespace std;
 
 #include "Projectile.h"
 
+
 class Ennemies
 {
 public:
@@ -41,8 +42,13 @@ public:
 	
 	void SetSize(vec2 size) { this->size=size; }
 	vec2 GetSize() { return this->size; }
-
+	
 	TextureRef GetCurrentTexture() { return this->currentAnimation.first; }
+
+	void Update(const vec2 & posCharacter);
+	void UpdateRose(const vec2 & posCharacter);
+	void Shoot(string source,const Projectile & projectile , double orientation ,  vec2  & direction );
+	
 private:
 	vector<Projectile>* pointerToAllProjectile = NULL;
 	vector<Projectile> projectile;

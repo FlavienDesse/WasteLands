@@ -96,6 +96,9 @@ public:
 
 	void SetTypeAttack(string typeAttack) { this->typeAttack = typeAttack; }
 	string GetTypeAttack() { return this->typeAttack; }
+
+
+	
 private:
 	double vie;
 	double vitesse;
