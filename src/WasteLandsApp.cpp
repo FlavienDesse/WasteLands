@@ -597,15 +597,24 @@ void WasteLands::update()
 			break;
 		case 2:
 		{
+		
+			
+			
 			bool temp;
 			this->mainCharacter.SetAnimationMainCharacter(this->touchPressed);
 			
+				
 
 			for (int j = 0; j < this->allEnnemies.size(); j++) {
 				auto & a = this->allEnnemies[j];
 				a.SetcurrentAnimation();
 				a.SetActualHitbox();
+				
 				a.Update(vec2(this->mainCharacter.GetPosX(), this->mainCharacter.GetPosY()));
+
+				
+				a.SetPos(vec2(a.GetPos()) + a.GetActualVelocity());
+				a.SetActualVelocity(vec2(0, 0));
 			}
 			
 				
@@ -709,9 +718,17 @@ void WasteLands::DrawMainMap() {
 
 	//////////////////////////////DEBUG///////////////////
 
-	for (auto a : this->allEnnemies) {
+/*	for (auto a : this->allEnnemies) {
 		DebugDrawPolygon(a.GetActualHitbox());
 	}
+
+	for (auto a : this->currentMap.GetDecor()) {
+		DebugDrawPolygon(a.GetHitBox());
+	}
+
+	for (auto a : this->allProjectile) {
+		DebugDrawPolygon(a.GetActualHitBox());
+	}*/
 	////////////////////////////////////////////////////
 
 	this->DrawButton();

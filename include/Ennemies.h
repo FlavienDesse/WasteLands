@@ -39,7 +39,11 @@ public:
 
 	void SetVelocity(vec2 velocity) { this->velocity=velocity; }
 	vec2 GetVelocity() { return this->velocity; }
-	
+
+	void SetActualVelocity(vec2 actualVelocity) { this->actualVelocity= actualVelocity; }
+	vec2 GetActualVelocity() { return this->actualVelocity; }
+
+
 	void SetSize(vec2 size) { this->size=size; }
 	vec2 GetSize() { return this->size; }
 	
@@ -48,7 +52,7 @@ public:
 	void Update(const vec2 & posCharacter);
 	void UpdateRose(const vec2 & posCharacter);
 	void Shoot(string source,const Projectile & projectile , double orientation ,  vec2  & direction );
-	
+	void SetAnimationWalk(double dx, double dy);
 private:
 	vector<Projectile>* pointerToAllProjectile = NULL;
 	vector<Projectile> projectile;
@@ -61,6 +65,8 @@ private:
 	polygon actualHitBox;
 	vec2 velocity;
 	vec2 size;
+	vec2 actualVelocity;
+
 };
 
 class Ennemiesload {
