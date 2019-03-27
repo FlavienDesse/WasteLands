@@ -16,6 +16,23 @@ using namespace std;
 
 #include "Projectile.h"
 
+struct SetupDeplacementAnimation_ {
+	float DEPLACEMENTWALKX;
+	float DEPLACEMENTWALKY;
+	float DEPLACEMENTJUMPWALKX;
+	float DEPLACEMENTJUMPWALKY;
+	float DEPLACEMENTJUMPRUNX ;
+	float DEPLACEMENTJUMPRUNY;
+	float DEPLACEMENTRUNX;
+	float DEPLACEMENTRUNY;
+
+	float SPEEDANIMATIONSTAND;
+	float SPEEDANIMATIONWALK;
+	float SPEEDANIMATIONJUMP;
+	float SPEEDANIMATIONRUN;
+	float SPEEDANIMATIONATTACK;
+};
+
 
 class Ennemies
 {
@@ -51,8 +68,13 @@ public:
 
 	void Update(const vec2 & posCharacter);
 	void UpdateRose(const vec2 & posCharacter);
+	
 	void Shoot(string source,const Projectile & projectile , double orientation ,  vec2  & direction );
 	void SetAnimationWalk(double dx, double dy);
+	void SetupDeplacementDelayClock(SetupDeplacementAnimation_   temp) { this->SetupDeplacementAnimation = temp; }
+
+	Timer & GetClockAnimation() { return this->clockAnimation; }
+	void SetAnimationShoot(double dx , double dy);
 private:
 	vector<Projectile>* pointerToAllProjectile = NULL;
 	vector<Projectile> projectile;
@@ -67,6 +89,8 @@ private:
 	vec2 size;
 	vec2 actualVelocity;
 
+	Timer clockAnimation;
+	SetupDeplacementAnimation_  SetupDeplacementAnimation;
 };
 
 class Ennemiesload {
