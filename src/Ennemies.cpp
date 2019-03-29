@@ -45,8 +45,8 @@ void Ennemies::SetActualHitbox() {
 
 	for (std::vector<point>::size_type i = 0; i < points.size(); ++i)
 	{
-		double temp1 = this->pos.x+ this->velocity.x+ (points[i].x() - (double)this->currentAnimation.first->getWidth() / 2) * ((double)this->size.x / this->currentAnimation.first->getWidth());
-		double temp2 = this->pos.y + this->velocity.y + (points[i].y() - (double)this->currentAnimation.first->getHeight() / 2) * ((double)this->size.y / this->currentAnimation.first->getHeight());
+		double temp1 = this->pos.x+ this->actualVelocity.x+ (points[i].x() - (double)this->currentAnimation.first->getWidth() / 2) * ((double)this->size.x / this->currentAnimation.first->getWidth());
+		double temp2 = this->pos.y + this->actualVelocity.y + (points[i].y() - (double)this->currentAnimation.first->getHeight() / 2) * ((double)this->size.y / this->currentAnimation.first->getHeight());
 
 		tempStringPolygon += to_string(temp1) + " " + to_string(temp2) + ",";
 
@@ -134,10 +134,7 @@ void Ennemies::SetAnimationWalk(double dx,double dy) {
 		}
 
 	}
-	else {
-		console() << (dx <= 0.50 && dx >= -sqrt(2) / 2) << endl;
-	}
-	
+
 	
 	this->actualVelocity = vec2(dx * this->velocity.x, dy* this->velocity.y);
 	}
@@ -147,11 +144,12 @@ void Ennemies::UpdateRose(const vec2 & posCharacter) {
 	double distanceCharacter = sqrt(pow(this->pos.x - posCharacter.x, 2) + pow(this->pos.y - posCharacter.y, 2)); 
 	double dx = (double)(cos(getAngle(posCharacter, this->pos)));
 	double dy = (double)(sin(getAngle(posCharacter, this->pos)) );
-	console() << dx << " " << dy << endl;
+	
 	if (distanceCharacter > 400) {
 		this->SetAnimationWalk(dx,dy);
 	}
 	else {
+		
 		this->SetAnimationShoot(dx, dy);
 		
 	}

@@ -208,6 +208,7 @@ void WasteLands::AttribAllImage(int pos) {
 		this->allEnnemiesLoad = this->progressBarVar.GetEnnemiesLoad();
 		
 		this->allEnnemies.push_back(this->allEnnemiesLoad["Rose"].TransformEnnemiesLoadToEnnemies("Rose",this->allEnnemiesLoad["Rose"],600,600, &this->allProjectile,vec2(5,5),vec2(150,150)));
+		this->allEnnemies.push_back(this->allEnnemiesLoad["Rose"].TransformEnnemiesLoadToEnnemies("Rose", this->allEnnemiesLoad["Rose"], 550, 600, &this->allProjectile, vec2(5, 5), vec2(150, 150)));
 		break;
 	default:
 		break;
@@ -606,19 +607,40 @@ void WasteLands::update()
 			
 			bool temp;
 			this->mainCharacter.SetAnimationMainCharacter(this->touchPressed);
-			
-				
-
 			for (int j = 0; j < this->allEnnemies.size(); j++) {
 				auto & a = this->allEnnemies[j];
 				a.SetcurrentAnimation();
 				a.SetActualHitbox();
-				
 				a.Update(vec2(this->mainCharacter.GetPosX(), this->mainCharacter.GetPosY()));
+			}
+
+			for (int j = 0; j < this->allEnnemies.size(); j++) {
+				auto & a = this->allEnnemies[j];
+				
+
+				for (auto i : this->currentMap.GetDecor()) {
+
+					if (temp = Collision(a.GetActualHitbox(), i.GetHitBox())) {
+
+						break;
+					}
+				}
+				if (temp == false)
+				for (auto i : this->allEnnemies) {
+				
+					if (a.GetPos() != i.GetPos()) {
+						i.SetActualHitbox();
+						if (temp = Collision(a.GetActualHitbox(), i.GetActualHitbox())) {
+							break;
+						}
+					}
+				}
+				if (temp == false) {
+					a.SetPos(vec2(a.GetPos()) + a.GetActualVelocity());
+					a.SetActualVelocity(vec2(0, 0));
+				}
 
 				
-				a.SetPos(vec2(a.GetPos()) + a.GetActualVelocity());
-				a.SetActualVelocity(vec2(0, 0));
 			}
 			
 				
@@ -646,7 +668,7 @@ void WasteLands::update()
 		
 			
 			for (int j = 0; j < this->allProjectile.size(); j++) {
-				bool temp = false;;
+				bool temp = false;
 				auto & a = this->allProjectile[j];
 				a.SetAtualHitBox();
 				for (auto i : this->currentMap.GetDecor()) {
@@ -658,15 +680,18 @@ void WasteLands::update()
 						break;
 					}
 				}
-				for (auto i : this->allEnnemies) {
+				if (temp == false) {
+					/*for (auto i : this->allEnnemies) {
 
-					/*if (temp = Collision(a.GetActualHitBox(), i.GetHitBox())) {
-						this->allProjectile.erase(this->allProjectile.begin() + j);
-						--j;
+						if (temp = Collision(a.GetActualHitBox(), i.GetActualHitbox())) {
+							this->allProjectile.erase(this->allProjectile.begin() + j);
+							--j;
 
-						break;
+							break;
+						}
 					}*/
 				}
+				
 				if (temp == false) {
 					a.SetPosX(a.GetPosX() + a.GetSpeedX());
 					a.SetPosY(a.GetPosY() + a.GetSpeedY());
@@ -722,7 +747,7 @@ void WasteLands::DrawMainMap() {
 
 	//////////////////////////////DEBUG///////////////////
 
-/*	for (auto a : this->allEnnemies) {
+	for (auto a : this->allEnnemies) {
 		DebugDrawPolygon(a.GetActualHitbox());
 	}
 
@@ -732,7 +757,7 @@ void WasteLands::DrawMainMap() {
 
 	for (auto a : this->allProjectile) {
 		DebugDrawPolygon(a.GetActualHitBox());
-	}*/
+	}
 	////////////////////////////////////////////////////
 
 	this->DrawButton();
