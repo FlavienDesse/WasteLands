@@ -1,6 +1,6 @@
 #include "Ennemies.h"
 
-Ennemies Ennemiesload::TransformEnnemiesLoadToEnnemies(string type , Ennemiesload source, int posX ,int posY, vector<Projectile> * pointerToAllProjectile, vec2 velocity, vec2 size  ) {
+Ennemies Ennemiesload::TransformEnnemiesLoadToEnnemies(string type , Ennemiesload source, int posX ,int posY, vector<Projectile> * pointerToAllProjectile, vec2 velocity, vec2 size , double vie , double degat) {
 	Ennemies temp;
 	temp.SetProjectile(source.GetProjectile());
 	temp.SetPos(vec2(posX, posY));
@@ -9,7 +9,9 @@ Ennemies Ennemiesload::TransformEnnemiesLoadToEnnemies(string type , Ennemiesloa
 	temp.SetallAnimationWithHitBox(source.GetAnimation());
 	temp.SetVelocity(velocity);
 	temp.SetSize(size);
-
+	temp.SetDegat(degat);
+	temp.SetVie(vie);
+	
 	if (type == "Rose") {
 
 		SetupDeplacementAnimation_  deplacementAnimationTemp;
@@ -27,8 +29,9 @@ Ennemies Ennemiesload::TransformEnnemiesLoadToEnnemies(string type , Ennemiesloa
 		deplacementAnimationTemp.SPEEDANIMATIONJUMP = 0.50;
 		deplacementAnimationTemp.SPEEDANIMATIONRUN = 0.50;
 		deplacementAnimationTemp.SPEEDANIMATIONATTACK = 0.50;
+		deplacementAnimationTemp.SPEEDANIMATIONDIE = 0.50;
 		temp.SetupDeplacementDelayClock(deplacementAnimationTemp);
-		
+		temp.SetAuraKill("Vert");
 		
 	}
 	temp.GetClockAnimation().start();
@@ -140,42 +143,78 @@ void Ennemies::SetAnimationWalk(double dx,double dy) {
 	}
 }
 
+void Ennemies::SetDie() {
+	this->canChangeAnimaion = false;
+	this->posAnimation = 0;
+	this->etatActual = "DieR";
+}
+
 void Ennemies::UpdateRose(const vec2 & posCharacter) {
-	double distanceCharacter = sqrt(pow(this->pos.x - posCharacter.x, 2) + pow(this->pos.y - posCharacter.y, 2)); 
-	double dx = (double)(cos(getAngle(posCharacter, this->pos)));
-	double dy = (double)(sin(getAngle(posCharacter, this->pos)) );
-	
-	if (distanceCharacter > 400) {
-		this->SetAnimationWalk(dx,dy);
+	if (this->canChangeAnimaion == true) {
+		double distanceCharacter = sqrt(pow(this->pos.x - posCharacter.x, 2) + pow(this->pos.y - posCharacter.y, 2));
+		double dx = (double)(cos(getAngle(posCharacter, this->pos)));
+		double dy = (double)(sin(getAngle(posCharacter, this->pos)));
+
+		if (distanceCharacter > 400) {
+			this->SetAnimationWalk(dx, dy);
+		}
+		else {
+
+			this->SetAnimationShoot(dx, dy);
+
+		}
+
 	}
 	else {
-		
-		this->SetAnimationShoot(dx, dy);
-		
+		if (this->etatActual == "DieR" || this->etatActual == "DieL") {
+			if (this->clockAnimation.getSeconds() > (double)this->SetupDeplacementAnimation.SPEEDANIMATIONDIE / this->allAnimationWithHitBox[this->etatActual].size()) {
+				this->posAnimation++;
+			}
+			if (posAnimation == this->allAnimationWithHitBox[this->etatActual].size()) {
+				this->isDying = 2;
+			}
+		}
 	}
-
 	
 	
 }
 void Ennemies::SetAnimationShoot(double dx, double dy) {
 	if (this->clockAnimation.getSeconds() > (double)this->SetupDeplacementAnimation.SPEEDANIMATIONATTACK / this->allAnimationWithHitBox[this->etatActual].size()) {
-
 		this->clockAnimation.stop();
 		this->clockAnimation.start();
-		if (this->etatActual != "AttackR" || (this->allAnimationWithHitBox[etatActual].size() == this->posAnimation + 1 && this->etatActual == "AttackR")) {
-			if ((this->allAnimationWithHitBox[etatActual].size() == this->posAnimation + 1 && this->etatActual == "AttackR")) {
-				Shoot("Rose " + 0, this->projectile[0], 2 * atan(dy / (dx + sqrt(pow(dx, 2) + pow(dy, 2)))), vec2(dx, dy));
+		if (dx <= 1 && dx >= 0) {
+			if (this->etatActual != "AttackR" || (this->allAnimationWithHitBox[etatActual].size() == this->posAnimation + 1 && this->etatActual == "AttackR")) {
+				if ((this->allAnimationWithHitBox[etatActual].size() == this->posAnimation + 1 && this->etatActual == "AttackR")) {
+					Shoot("Ennemies" , this->projectile[0], 2 * atan(dy / (dx + sqrt(pow(dx, 2) + pow(dy, 2)))), vec2(dx, dy));
+				}
+				this->etatActual = "AttackR";
+					this->posAnimation = 0;
+
 			}
-			this->etatActual = "AttackR";
-			this->posAnimation = 0;
-		
+			else {
+
+				this->posAnimation++;
+
+			}
 		}
 		else {
+			if (this->etatActual != "AttackL" || (this->allAnimationWithHitBox[etatActual].size() == this->posAnimation + 1 && this->etatActual == "AttackL")) {
+				if ((this->allAnimationWithHitBox[etatActual].size() == this->posAnimation + 1 && this->etatActual == "AttackL")) {
+					Shoot("Ennemies", this->projectile[0], 2 * atan(dy / (dx + sqrt(pow(dx, 2) + pow(dy, 2)))), vec2(dx, dy));
+				}
+				this->etatActual = "AttackL";
+				this->posAnimation = 0;
 
-			this->posAnimation++;
+			}
+			else {
 
+				this->posAnimation++;
+
+			}
 		}
-	
+
+
+
 	}
 }
 
@@ -186,7 +225,7 @@ void Ennemies::Shoot(string source, const Projectile & projectile, double orient
 	
 	temp.SetSpeedX(temp.GetSpeedX() * direction.x);
 	temp.SetSpeedY(temp.GetSpeedY()  * direction.y);
-
+	temp.SetDommage(this->degat);
 	
 	
 	temp.SetOrientation(orientation);

@@ -195,6 +195,7 @@
     <ResourceCompile Include="Resources.rc" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\include\Aura.h" />
     <ClInclude Include="..\include\Button.h" />
     <ClInclude Include="..\include\Decor.h" />
     <ClInclude Include="..\include\Ennemies.h" />
@@ -230,6 +231,7 @@
     <ClInclude Include="..\WMFVIDEO\presenter\scheduler.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\Aura.cpp" />
     <ClCompile Include="..\src\Button.cpp" />
     <ClCompile Include="..\src\Decor.cpp" />
     <ClCompile Include="..\src\Ennemies.cpp" />

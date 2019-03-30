@@ -9,7 +9,7 @@
 #include "cinder/gl/gl.h"
 #include "Touches.h"
 #include "Projectile.h"
-
+#include "Aura.h"
 #include <boost/geometry.hpp>
 #include <boost/geometry/geometries/point_xy.hpp>
 #include <boost/geometry/geometries/polygon.hpp>
@@ -94,18 +94,19 @@ public:
 	polygon GetHitBoxOnCurrentAnimation();
 	void SetActuelHitBoxOnCurrentAnimation();
 
-	void SetTypeAttack(string typeAttack) { this->typeAttack = typeAttack; }
-	string GetTypeAttack() { return this->typeAttack; }
 
+	Aura & GetAura() { return this->aura; }
+	void  SetAura(Aura aura) {  this->aura=aura; }
 
 	
+
 private:
-	double vie;
-	double vitesse;
-	double vitesseAttaque;
-	double degat;
+	double vie = 100;
+	
+
+	double degat = 100;
 	double armure;
-	int typeDegat;
+	
 	bool canChangeAnimation;
 	short int walkJump;
 	map<string, vector <pair <ci::gl::TextureRef,polygon>>> animation;
@@ -124,11 +125,11 @@ private:
 	polygon actualHitBox;
 	float sizeX = 150;
 	float sizeY=150;
-	string typeAttack;
+	
 	vector<Projectile>* pointerToAllProjectile=NULL;
 	vector<Projectile> projectile;
 
-
+	Aura aura;
 	
 	float DEPLACEMENTWALKX = 5;
 	float DEPLACEMENTWALKY = 5;

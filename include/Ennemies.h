@@ -31,6 +31,7 @@ struct SetupDeplacementAnimation_ {
 	float SPEEDANIMATIONJUMP;
 	float SPEEDANIMATIONRUN;
 	float SPEEDANIMATIONATTACK;
+	float SPEEDANIMATIONDIE;
 };
 
 
@@ -75,10 +76,24 @@ public:
 
 	Timer & GetClockAnimation() { return this->clockAnimation; }
 	void SetAnimationShoot(double dx , double dy);
+
+	void SetVie(double vie) { this->vie = vie; }
+	double GetVie() { return this->vie; }
+
+	void SetDegat(double degat) { this->degat = degat; }
+	double GetDegat() { return this->degat; }
+
+	void SetDie();
+
+	int GetisDying() { return this->isDying; }
+
+	void SetAuraKill(string auraKill) { this->auraKill = auraKill; }
+	string GetAuraKil() { return this->auraKill; }
 private:
 	vector<Projectile>* pointerToAllProjectile = NULL;
 	vector<Projectile> projectile;
 	string type;
+	string auraKill;
 	vec2 pos;
 	map<string, vector <pair <ci::gl::TextureRef, polygon>>> allAnimationWithHitBox;
 	int posAnimation = 0;
@@ -88,9 +103,13 @@ private:
 	vec2 velocity;
 	vec2 size;
 	vec2 actualVelocity;
-
+	bool canChangeAnimaion = true;
 	Timer clockAnimation;
 	SetupDeplacementAnimation_  SetupDeplacementAnimation;
+	int isDying=0;
+
+	double degat;
+	double vie;
 };
 
 class Ennemiesload {
@@ -99,7 +118,7 @@ public:
 	map<string, vector <pair <ci::gl::TextureRef, polygon>>> & GetAnimation() { return this->animation; }
 	vector<Projectile> & GetProjectile() { return this->projectile; }
 	void SetProjectile(vector<Projectile> projectile) { this->projectile=projectile; }
-	Ennemies TransformEnnemiesLoadToEnnemies(string type, Ennemiesload source,int posX,int posY, vector<Projectile>* pointerToAllProjectile, vec2 velocity, vec2 size);
+	Ennemies TransformEnnemiesLoadToEnnemies(string type, Ennemiesload source,int posX,int posY, vector<Projectile>* pointerToAllProjectile, vec2 velocity, vec2 size, double vie , double degat);
 private:
 	map<string, vector <pair <ci::gl::TextureRef, polygon>>> animation;
 	string name;

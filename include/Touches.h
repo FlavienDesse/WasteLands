@@ -4,7 +4,7 @@
 #include <string>
 class Touches {
 public:
-	Touches(short int attack,short int runBR, short int runBL, short int runTL, short int runTR, short int avancerrTR,short int avancerrTL,short int avancerrBL,short int avancerrBR,short int avancerR, short int avancerT, short int avancerL, short int avancerB, short int jump, short int runR, short int runT, short int runL, short int runB,short int shift);
+	Touches(short int attack,short int runBR, short int runBL, short int runTL, short int runTR, short int avancerrTR,short int avancerrTL,short int avancerrBL,short int avancerrBR,short int avancerR, short int avancerT, short int avancerL, short int avancerB, short int jump, short int runR, short int runT, short int runL, short int runB,short int shift, short int changeaAura);
 	short int GetValueTouche(std::string touchesVoulues);
 private:
 	short int avancerR;
@@ -26,6 +26,7 @@ private:
 	short int runB;
 	short int shift;
 	short int attack;
+	short int changeaAura;
 };
 
 #endif

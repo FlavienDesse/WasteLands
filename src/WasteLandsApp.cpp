@@ -49,8 +49,10 @@ typedef boost::geometry::model::polygon< point > polygon;
 //WalktTR = Tr Top
 //WalkTL = TL
 
-
-
+// Aura vert = végétaux
+// Jaune = recyclable ( verre , carton , plastique , conserve )
+// Noir = non recycable
+// Gris = ?
 
 
 
@@ -207,8 +209,9 @@ void WasteLands::AttribAllImage(int pos) {
 		}
 		this->allEnnemiesLoad = this->progressBarVar.GetEnnemiesLoad();
 		
-		this->allEnnemies.push_back(this->allEnnemiesLoad["Rose"].TransformEnnemiesLoadToEnnemies("Rose",this->allEnnemiesLoad["Rose"],600,600, &this->allProjectile,vec2(5,5),vec2(150,150)));
-		this->allEnnemies.push_back(this->allEnnemiesLoad["Rose"].TransformEnnemiesLoadToEnnemies("Rose", this->allEnnemiesLoad["Rose"], 550, 600, &this->allProjectile, vec2(5, 5), vec2(150, 150)));
+		this->allEnnemies.push_back(this->allEnnemiesLoad["Rose"].TransformEnnemiesLoadToEnnemies("Rose",this->allEnnemiesLoad["Rose"],600,600, &this->allProjectile,vec2(5,5),vec2(150,150),100,20));
+		this->allEnnemies.push_back(this->allEnnemiesLoad["Rose"].TransformEnnemiesLoadToEnnemies("Rose", this->allEnnemiesLoad["Rose"], 550, 600, &this->allProjectile, vec2(5, 5), vec2(150, 150),100,20));
+		this->mainCharacter.GetAura().GetClock().start();
 		break;
 	default:
 		break;
@@ -366,7 +369,7 @@ void WasteLands::keyDown(KeyEvent event)
 			this->touchPressed[this->mainCharacter.GetallTouches().GetValueTouche("Shift")] = true;
 
 		}
-
+		
 		int touch = event.getCode();
 		this->touchPressed[touch] = true;
 
@@ -427,7 +430,12 @@ void WasteLands::keyUp(KeyEvent event)
 			this->touchPressed[this->mainCharacter.GetallTouches().GetValueTouche("Shift")] = false;
 		}
 		int touch = event.getCode();
+	
+		if (this->touchPressed[this->mainCharacter.GetallTouches().GetValueTouche("ChangeAura")] == true && touch == this->mainCharacter.GetallTouches().GetValueTouche("ChangeAura")) {
+			this->mainCharacter.GetAura().ChangeAura();
+		}
 		this->touchPressed[touch] = false;
+		
 		if ((this->touchPressed[this->mainCharacter.GetallTouches().GetValueTouche("Shift")] == false || this->touchPressed[this->mainCharacter.GetallTouches().GetValueTouche("WalkR")] == false) && this->touchPressed[this->mainCharacter.GetallTouches().GetValueTouche("RunR")] == true) {
 			this->touchPressed[this->mainCharacter.GetallTouches().GetValueTouche("RunR")] = false;
 		}
@@ -603,15 +611,24 @@ void WasteLands::update()
 		case 2:
 		{
 		
-			
+			vector <vec2> posFollowFrameEnnemi;
 			
 			bool temp;
 			this->mainCharacter.SetAnimationMainCharacter(this->touchPressed);
+	
 			for (int j = 0; j < this->allEnnemies.size(); j++) {
 				auto & a = this->allEnnemies[j];
-				a.SetcurrentAnimation();
-				a.SetActualHitbox();
-				a.Update(vec2(this->mainCharacter.GetPosX(), this->mainCharacter.GetPosY()));
+				if (a.GetisDying() == 2) {
+					this->allEnnemies.erase(this->allEnnemies.begin() + j);
+					--j;
+				}
+				else {
+					a.SetcurrentAnimation();
+					a.Update(vec2(this->mainCharacter.GetPosX(), this->mainCharacter.GetPosY()));
+					a.SetActualHitbox();
+				}
+				
+				
 			}
 
 			for (int j = 0; j < this->allEnnemies.size(); j++) {
@@ -636,19 +653,29 @@ void WasteLands::update()
 					}
 				}
 				if (temp == false) {
-					a.SetPos(vec2(a.GetPos()) + a.GetActualVelocity());
-					a.SetActualVelocity(vec2(0, 0));
+					posFollowFrameEnnemi.push_back(vec2(a.GetPos()) + a.GetActualVelocity());
+					
 				}
-
+				else {
+					posFollowFrameEnnemi.push_back(vec2(a.GetPos()));
+					a.SetActualVelocity(vec2(0, 0));
+					a.SetActualHitbox();
+				}
+				
+				a.SetActualVelocity(vec2(0, 0));
 				
 			}
 			
-				
+			for (int j = 0; j < this->allEnnemies.size(); j++) {
+				auto & a = this->allEnnemies[j];
+				a.SetPos(posFollowFrameEnnemi[j]);
+			}
 				
 				
 			temp = false;
 		
 			this->mainCharacter.SetActuelHitBoxOnCurrentAnimation();
+			this->mainCharacter.GetAura().update();
 			if (this->mainCharacter.GetVelocityX() != 0 || this->mainCharacter.GetVelocityY() != 0) {
 				for (auto i : this->currentMap.GetDecor()) {
 
@@ -664,7 +691,7 @@ void WasteLands::update()
 				this->mainCharacter.SetVelocityX(0);
 				this->mainCharacter.SetVelocityY(0);
 			}
-			
+			this->mainCharacter.SetActuelHitBoxOnCurrentAnimation();
 		
 			
 			for (int j = 0; j < this->allProjectile.size(); j++) {
@@ -681,15 +708,37 @@ void WasteLands::update()
 					}
 				}
 				if (temp == false) {
-					/*for (auto i : this->allEnnemies) {
+					string sourceProjectile = a.GetSource();
+					string type = sourceProjectile.substr(0,sourceProjectile.find(" "));     
+					
 
-						if (temp = Collision(a.GetActualHitBox(), i.GetActualHitbox())) {
+					if (type == "MainCharacter") {
+						string aura = sourceProjectile.substr(sourceProjectile.find(" ") + 1);	
+						for (auto & i : this->allEnnemies) {
+							if (temp = Collision(a.GetActualHitBox(), i.GetActualHitbox())) {
+								if (aura == i.GetAuraKil()) {
+									i.SetVie(i.GetVie() - a.GetDommage());
+									if (i.GetVie() <= 0 && i.GetisDying() == 0) {
+										i.SetDie();
+
+									}
+								
+								}
+								this->allProjectile.erase(this->allProjectile.begin() + j);
+								--j;
+								break;
+							}
+						}
+
+					}
+					else if (type == "Ennemies") {
+						if (temp = Collision(a.GetActualHitBox(), this->mainCharacter.GetHitBoxOnCurrentAnimation())) {
+							this->mainCharacter.SetVie(this->mainCharacter.GetVie() - a.GetDommage());
 							this->allProjectile.erase(this->allProjectile.begin() + j);
 							--j;
-
-							break;
 						}
-					}*/
+					}
+					
 				}
 				
 				if (temp == false) {
@@ -737,6 +786,11 @@ void WasteLands::DrawMainMap() {
 	for (auto i : this->allThingToDraw) {
 		if (i.GetSource() == "Projectile") {
 			this->drawProjectile(i.GetTexture(), i.GetPos(), i.GetSize(), i.GetOrientation());
+		}
+		else if (i.GetSource() == "Main character") {
+			this->drawTex(i.GetTexture(), i.GetPos(), i.GetSize());
+			this->drawTex(this->mainCharacter.GetAura().GetTextureAura(), i.GetPos(), i.GetSize());
+			
 		}
 		else {
 			this->drawTex(i.GetTexture(), i.GetPos(), i.GetSize());

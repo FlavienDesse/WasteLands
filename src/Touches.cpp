@@ -1,7 +1,7 @@
 #include "Touches.h"
 
-Touches::Touches(short int attack, short int runBR, short int runBL, short int runTL, short int runTR, short int avancerTR, short int avancerTL, short int avancerBL, short int avancerBR, short int avancerR, short int avancerT, short int avancerL, short int avancerB, short int jump, short int runR, short int runT, short int runL, short int runB, short int shift)
-	:attack(attack), runBR(runBR), runBL(runBL), runTL(runTL), runTR(runTR), avancerTR(avancerTR), avancerTL(avancerTL), avancerBL(avancerBL), avancerBR(avancerBR), avancerR(avancerR), avancerT(avancerT), avancerL(avancerL), avancerB(avancerB), jump(jump), runR(runR), runT(runT), runL(runL), runB(runB), shift(shift) {}
+Touches::Touches(short int attack, short int runBR, short int runBL, short int runTL, short int runTR, short int avancerTR, short int avancerTL, short int avancerBL, short int avancerBR, short int avancerR, short int avancerT, short int avancerL, short int avancerB, short int jump, short int runR, short int runT, short int runL, short int runB, short int shift, short int changeaAura)
+	:attack(attack), runBR(runBR), runBL(runBL), runTL(runTL), runTR(runTR), avancerTR(avancerTR), avancerTL(avancerTL), avancerBL(avancerBL), avancerBR(avancerBR), avancerR(avancerR), avancerT(avancerT), avancerL(avancerL), avancerB(avancerB), jump(jump), runR(runR), runT(runT), runL(runL), runB(runB), shift(shift), changeaAura(changeaAura){}
 
 short int Touches::GetValueTouche(std::string touchesVoulues) {
 	if (touchesVoulues == "WalkR") {
@@ -60,6 +60,9 @@ short int Touches::GetValueTouche(std::string touchesVoulues) {
 	}
 	if (touchesVoulues == "Shot") {
 		return this->attack;
+	}
+	if (touchesVoulues == "ChangeAura") {
+		return this->changeaAura;
 	}
 	return 0;
 }

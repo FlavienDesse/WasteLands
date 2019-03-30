@@ -285,10 +285,30 @@ void ProgressBar::SetupMapCharacterAndEnnemies(std::experimental::filesystem::v1
 			}
 
 		}
+	}
+
+
+		for (const auto & allDirectory : std::experimental::filesystem::v1::directory_iterator(getAssetDirectories()[0].u8string() + "\\Character\\Aura" )) {
+
+		
+
+			for (const auto & entry : std::experimental::filesystem::v1::directory_iterator(allDirectory.path())) {
+
+				extension = GetFileExtension(entry.path().u8string());
+
+				if (extension == "png") {
 
 
 
+				
 
+
+					mQueue.push_back(entry.path());
+
+
+				}
+
+			}
 
 
 
@@ -430,7 +450,7 @@ void ProgressBar::threadSetupMapCharacterAndEnnemies(gl::ContextRef ctx)
 		int pos3 = file.u8string().find_last_of('\\', posDirectoryName - 2) + 1;
 		string key3 = file.u8string().substr(pos3, posDirectoryName - pos3 - 1);
 
-		
+		console() << key3 << endl;
 		
 		if (key == "fond.png") {
 			this->currentTextureMap = texture;
@@ -444,7 +464,9 @@ void ProgressBar::threadSetupMapCharacterAndEnnemies(gl::ContextRef ctx)
 			
 			numberDecor++;
 		}
-		
+		else if (key3 == "Aura") {
+			this->mainCharacter.GetAura().GetAllTextureAura()[keyDirectoryName].push_back(texture);
+		}
 		else if(key3=="Archer" || key3 == "Knight" || key3 == "Wizard") {
 			
 			if (lastKey != keyDirectoryName) {

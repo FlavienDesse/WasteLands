@@ -3,7 +3,7 @@
 #include "cinder/app/App.h"
 typedef boost::geometry::model::d2::point_xy<double> point;
 typedef boost::geometry::model::polygon< point > polygon;
-Personnage::Personnage() :allTouches(102, -12, -11, 10, -9, -5, -6, -7, -8, 275, 273, 276, 274, 32, -1, -2, -3, -4, 304) {}
+Personnage::Personnage() :allTouches(102, -12, -11, 10, -9, -5, -6, -7, -8, 275, 273, 276, 274, 32, -1, -2, -3, -4, 304,103) {}
 
 Touches Personnage::GetallTouches() {
 	return this->allTouches;
@@ -402,10 +402,11 @@ void Personnage::SetPositionActualAnimation(int pos ) {
 			this->positionActualAnimation = 0;
 			this->projectile[0].SetPosX(this->GetPosX());
 			this->projectile[0].SetPosY(this->GetPosY());
+			this->projectile[0].SetDommage(this->degat);
 			this->projectile[0].SetSpeedX(10);
 			this->projectile[0].SetSpeedY(0);
 			this->projectile[0].SetOrientation(0 * -M_PI / 2);
-			this->projectile[0].SetSource("MainCharacter " + this->typeAttack);
+			this->projectile[0].SetSource("MainCharacter " + this->GetAura().GetActualArea() );
 			this->projectile[0].SetStartTime(getElapsedSeconds());
 			this->pointerToAllProjectile->push_back(this->projectile[0]);
 			this->SetEtatActuel("StandR");
@@ -421,9 +422,10 @@ void Personnage::SetPositionActualAnimation(int pos ) {
 		this->projectile[0].SetPosX(this->GetPosX());
 		this->projectile[0].SetPosY(this->GetPosY());
 		this->projectile[0].SetSpeedX(0);
+		this->projectile[0].SetDommage(this->degat);
 		this->projectile[0].SetSpeedY(-10);
 		this->projectile[0].SetOrientation(1*-M_PI/2);
-		this->projectile[0].SetSource("MainCharacter " + this->typeAttack);
+		this->projectile[0].SetSource("MainCharacter " + this->GetAura().GetActualArea());
 		this->projectile[0].SetStartTime(getElapsedSeconds());
 		this->pointerToAllProjectile->push_back(this->projectile[0]);
 		this->SetEtatActuel("StandT");
@@ -440,8 +442,9 @@ void Personnage::SetPositionActualAnimation(int pos ) {
 		this->projectile[0].SetPosY(this->GetPosY());
 		this->projectile[0].SetSpeedX(-10);
 		this->projectile[0].SetSpeedY(0);
+		this->projectile[0].SetDommage(this->degat);
 		this->projectile[0].SetOrientation(2 * -M_PI / 2);
-		this->projectile[0].SetSource("MainCharacter " + this->typeAttack);
+		this->projectile[0].SetSource("MainCharacter " + this->GetAura().GetActualArea());
 		this->projectile[0].SetStartTime(getElapsedSeconds());
 		this->pointerToAllProjectile->push_back(this->projectile[0]);
 		this->SetEtatActuel("StandL");
@@ -458,8 +461,9 @@ void Personnage::SetPositionActualAnimation(int pos ) {
 		this->projectile[0].SetPosY(this->GetPosY());
 		this->projectile[0].SetSpeedX(0);
 		this->projectile[0].SetSpeedY(10);
+		this->projectile[0].SetDommage(this->degat);
 		this->projectile[0].SetOrientation(3 * -M_PI / 2);
-		this->projectile[0].SetSource("MainCharacter " + this->typeAttack);
+		this->projectile[0].SetSource("MainCharacter "+this->GetAura().GetActualArea() );
 		this->projectile[0].SetStartTime(getElapsedSeconds());
 		this->pointerToAllProjectile->push_back(this->projectile[0]);
 		this->SetEtatActuel("StandB");
@@ -477,7 +481,8 @@ void Personnage::SetPositionActualAnimation(int pos ) {
 		this->projectile[0].SetSpeedX(10);
 		this->projectile[0].SetOrientation(0.5*-M_PI / 2);
 		this->projectile[0].SetSpeedY(-10);
-		this->projectile[0].SetSource("MainCharacter " + this->typeAttack);
+		this->projectile[0].SetDommage(this->degat);
+		this->projectile[0].SetSource("MainCharacter " + this->GetAura().GetActualArea() );
 		this->projectile[0].SetStartTime(getElapsedSeconds());
 		this->pointerToAllProjectile->push_back(this->projectile[0]);
 		this->SetEtatActuel("StandTR");
@@ -494,8 +499,9 @@ void Personnage::SetPositionActualAnimation(int pos ) {
 		this->projectile[0].SetPosY(this->GetPosY());
 		this->projectile[0].SetSpeedX(-10);
 		this->projectile[0].SetSpeedY(-10);
+		this->projectile[0].SetDommage(this->degat);
 		this->projectile[0].SetOrientation(1.5*-M_PI / 2);
-		this->projectile[0].SetSource("MainCharacter " + this->typeAttack);
+		this->projectile[0].SetSource("MainCharacter " + this->GetAura().GetActualArea());
 		this->projectile[0].SetStartTime(getElapsedSeconds());
 		this->pointerToAllProjectile->push_back(this->projectile[0]);
 		this->SetEtatActuel("StandTL");
@@ -513,7 +519,8 @@ void Personnage::SetPositionActualAnimation(int pos ) {
 		this->projectile[0].SetSpeedX(-10);
 		this->projectile[0].SetOrientation(2.5*-M_PI / 2);
 		this->projectile[0].SetSpeedY(10);
-		this->projectile[0].SetSource("MainCharacter " + this->typeAttack);
+		this->projectile[0].SetDommage(this->degat);
+		this->projectile[0].SetSource("MainCharacter " + this->GetAura().GetActualArea());
 		this->projectile[0].SetStartTime(getElapsedSeconds());
 		this->pointerToAllProjectile->push_back(this->projectile[0]);
 		this->SetEtatActuel("StandBL");
@@ -531,7 +538,8 @@ void Personnage::SetPositionActualAnimation(int pos ) {
 		this->projectile[0].SetSpeedX(10);
 		this->projectile[0].SetOrientation(3.5*-M_PI / 2);
 		this->projectile[0].SetSpeedY(10);
-		this->projectile[0].SetSource("MainCharacter " + this->typeAttack);
+		this->projectile[0].SetDommage(this->degat);
+		this->projectile[0].SetSource("MainCharacter " + this->GetAura().GetActualArea());
 		this->projectile[0].SetStartTime(getElapsedSeconds());
 		this->pointerToAllProjectile->push_back(this->projectile[0]);
 		this->SetEtatActuel("StandBR");
@@ -598,21 +606,14 @@ int Personnage::GetPositionActualAnimation() {
 double Personnage::GetVie() {
 	return this->vie;
 }
-double Personnage::GetVitesse() {
-	return this->vitesse;
-}
-double Personnage::GetVitesseAttaque() {
-	return this->vitesseAttaque;
-}
+
 double Personnage::GetDegat() {
 	return this->degat;
 }
 double Personnage::GetArmure() {
 	return this->armure;
 }
-double Personnage::GetTypeDegat() {
-	return this->typeDegat;
-}
+
 void Personnage::SetPosX(double posX) {
 	this->posX = posX;
 }
@@ -625,24 +626,11 @@ double Personnage::GetPosX() {
 double Personnage::GetPosY() {
 	return this->posY;
 }
-void Personnage::SetTypeDegat( ) {
-	int temp = this->typeDegat + 1;
-	if (temp == 3) {
-		this->typeDegat = 0;
-	}
-	else {
-		this->typeDegat++;
-	}
-}
+
 void Personnage::SetVie(double vie) {
 	this->vie = vie;
 }
-void Personnage::SetVitesse(double vitesse) {
-	this->vitesse = vitesse;
-}
-void Personnage::SetVitesseAttaque(double vitesseAttaque) {
-	this->vitesseAttaque = vitesseAttaque;
-}
+
 void Personnage::SetDegat(double degat) {
 	this->degat = degat;
 }
