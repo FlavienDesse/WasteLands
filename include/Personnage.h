@@ -59,8 +59,7 @@ public:
 	void SetCanChangeAnimationn(bool value);
 	double GetPosX();
 	double GetPosY();
-	short int GetWalkJump();
-	void SetWalkJump(short int value);
+	
 
 	
 
@@ -98,11 +97,17 @@ public:
 	void SetVelocityRun(std::map<int, bool>& touchPressed);
 	void SetVelocityJump(std::map<int, bool>& touchPressed);
 	void Shoot(string source, const Projectile & projectile, double orientation, vec2  & direction);
+
+	void SetMaxVie(double maxVie) { this->maxVie = maxVie; }
+	double GetMaxVie() {return this->maxVie ; }
+
+	int GetIsDying() { return this->isDying; }
+	void SetIsDying(int isDying) { this->isDying = isDying; }
 private:
 	double vie = 100;
-	
+	double maxVie = 100;
 	vec2 orientation;
-
+	int isDying = 0;
 	double degat = 100;
 	double armure;
 	
@@ -146,7 +151,7 @@ private:
 	float SPEEDANIMATIONJUMP = 0.50;
 	float SPEEDANIMATIONRUN = 0.50;
 	float SPEEDANIMATIONATTACK = 0.005;
-
+	float SPEEDANIMATIONDIE = 1;
 };
 
 

@@ -176,7 +176,16 @@ void Personnage::SetCurrentAnimation(std::map<int, bool>&  touchPressed) {
 			}
 		}
 	}
-
+	else if (etatActuel == "DieR" || etatActuel == "DieL") {
+		if (this->clockAnimation.getSeconds() > (double)this->SPEEDANIMATIONDIE / this->animation[this->etatActuel].size()) {
+			this->clockAnimation.stop();
+			this->clockAnimation.start();
+			positionActualAnimation++;
+			if (positionActualAnimation == this->animation[this->etatActuel].size()-1) {
+				this->isDying = 2;
+			}
+		}
+	}
 
 
 	

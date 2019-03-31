@@ -37,7 +37,7 @@ typedef boost::geometry::model::polygon< point > polygon;
 2 = map ou on peux bouger / jouer
 3 = credits 
 4 = echap
-
+5 = on est mouru
 
 
 
@@ -97,7 +97,7 @@ public:
 	polygon TransformHitBoxInOneray(polygon Polygon);
 
 	void drawProjectile(const ci::gl::Texture2dRef &tex, const ci::vec2 &pos, const Rectf & size, float orientation);
-	
+	void DrawHp();
 private:
 	std::map<int, bool> touchPressed;
 	Personnage mainCharacter;
@@ -326,9 +326,39 @@ void WasteLands::mouseMove(MouseEvent event) {
 		break;
 	case 2:
 	{
-		double x = this->mainCharacter.GetPosX() - getWindowWidth() / 2 + event.getPos().x;
-		double y = this->mainCharacter.GetPosY() - getWindowHeight() / 2 + event.getPos().y;
-		double dx = (double)(cos(getAngle(vec2(this->mainCharacter.GetPosX(), this->mainCharacter.GetPosY()),vec2(x,y) )));
+		double x;
+		double y;
+		if (this->getWindowWidth() / 2 >= this->mainCharacter.GetPosX()) {
+
+			x = event.getX();
+
+
+		}
+		else if (this->currentMap.GetTextureCurrentMap()->getWidth() <= this->mainCharacter.GetPosX() + this->getWindowWidth() / 2) {
+			x = this->currentMap.GetTextureCurrentMap()->getWidth() - this->getWindowWidth() + event.getX();
+
+		}
+		else {
+			x = this->mainCharacter.GetPosX() - this->getWindowWidth() / 2 + event.getX();
+			
+		}
+
+		if (this->getWindowHeight() / 2 >= this->mainCharacter.GetPosY()) {
+
+			y = event.getY();
+
+
+		}
+		else if (this->currentMap.GetTextureCurrentMap()->getHeight() <= this->mainCharacter.GetPosY() + this->getWindowHeight() / 2) {
+			
+			y = this->currentMap.GetTextureCurrentMap()->getHeight() - this->getWindowHeight() + event.getY();
+		}
+		else {
+
+			
+			y = this->mainCharacter.GetPosY() - this->getWindowHeight() / 2 + event.getY();
+		}
+		double dx = (double)(cos(getAngle(vec2(this->mainCharacter.GetPosX(), this->mainCharacter.GetPosY()), vec2(x, y))));
 		double dy = (double)(sin(getAngle(vec2(this->mainCharacter.GetPosX(), this->mainCharacter.GetPosY()),vec2(x,y))));
 		this->mainCharacter.SetOrientation(vec2(-dx,- dy));
 	}
@@ -662,143 +692,159 @@ void WasteLands::update()
 			vector <vec2> posFollowFrameEnnemi;
 			
 			bool temp;
-			
 			this->mainCharacter.Update(this->touchPressed);
-	
-			for (int j = 0; j < this->allEnnemies.size(); j++) {
-				auto & a = this->allEnnemies[j];
-				if (a.GetisDying() == 2) {
-					this->allEnnemies.erase(this->allEnnemies.begin() + j);
-					--j;
-				}
-				else {
-					a.SetcurrentAnimation();
-					a.Update(vec2(this->mainCharacter.GetPosX(), this->mainCharacter.GetPosY()));
-					a.SetActualHitbox();
-				}
-				
-				
+			if (this->mainCharacter.GetIsDying() == 2) {
+				this->actualMap = 5;
 			}
-
-			for (int j = 0; j < this->allEnnemies.size(); j++) {
-				auto & a = this->allEnnemies[j];
-				
-
-				for (auto i : this->currentMap.GetDecor()) {
-
-					if (temp = Collision(a.GetActualHitbox(), i.GetHitBox())) {
-
-						break;
+			else {
+				for (int j = 0; j < this->allEnnemies.size(); j++) {
+					auto & a = this->allEnnemies[j];
+					if (a.GetisDying() == 2) {
+						this->allEnnemies.erase(this->allEnnemies.begin() + j);
+						--j;
 					}
+					else {
+						a.SetcurrentAnimation();
+						a.Update(vec2(this->mainCharacter.GetPosX(), this->mainCharacter.GetPosY()));
+						a.SetActualHitbox();
+					}
+
+
 				}
-				if (temp == false)
-				for (auto i : this->allEnnemies) {
-				
-					if (a.GetPos() != i.GetPos()) {
-						i.SetActualHitbox();
-						if (temp = Collision(a.GetActualHitbox(), i.GetActualHitbox())) {
+
+				for (int j = 0; j < this->allEnnemies.size(); j++) {
+					auto & a = this->allEnnemies[j];
+
+
+					for (auto i : this->currentMap.GetDecor()) {
+
+						if (temp = Collision(a.GetActualHitbox(), i.GetHitBox())) {
+
 							break;
 						}
 					}
-				}
-				if (temp == false) {
-					posFollowFrameEnnemi.push_back(vec2(a.GetPos()) + a.GetActualVelocity());
-					
-				}
-				else {
-					posFollowFrameEnnemi.push_back(vec2(a.GetPos()));
+					if (temp == false)
+						for (auto i : this->allEnnemies) {
+
+							if (a.GetPos() != i.GetPos()) {
+								i.SetActualHitbox();
+								if (temp = Collision(a.GetActualHitbox(), i.GetActualHitbox())) {
+									break;
+								}
+							}
+						}
+					if (temp == false) {
+						posFollowFrameEnnemi.push_back(vec2(a.GetPos()) + a.GetActualVelocity());
+
+					}
+					else {
+						posFollowFrameEnnemi.push_back(vec2(a.GetPos()));
+						a.SetActualVelocity(vec2(0, 0));
+						a.SetActualHitbox();
+					}
+
 					a.SetActualVelocity(vec2(0, 0));
-					a.SetActualHitbox();
-				}
-				
-				a.SetActualVelocity(vec2(0, 0));
-				
-			}
-			
-			for (int j = 0; j < this->allEnnemies.size(); j++) {
-				auto & a = this->allEnnemies[j];
-				a.SetPos(posFollowFrameEnnemi[j]);
-			}
-				
-				
-			temp = false;
-		
-			this->mainCharacter.SetActuelHitBoxOnCurrentAnimation();
-			this->mainCharacter.GetAura().update();
-			if (this->mainCharacter.GetVelocityX() != 0 || this->mainCharacter.GetVelocityY() != 0) {
-				for (auto i : this->currentMap.GetDecor()) {
 
-					if (temp = Collision(this->mainCharacter.GetHitBoxOnCurrentAnimation(), i.GetHitBox())) {
-						break;
+				}
+
+				for (int j = 0; j < this->allEnnemies.size(); j++) {
+					auto & a = this->allEnnemies[j];
+					a.SetPos(posFollowFrameEnnemi[j]);
+				}
+
+
+				temp = false;
+
+				this->mainCharacter.SetActuelHitBoxOnCurrentAnimation();
+				this->mainCharacter.GetAura().update();
+				if (this->mainCharacter.GetVelocityX() != 0 || this->mainCharacter.GetVelocityY() != 0) {
+					for (auto i : this->currentMap.GetDecor()) {
+
+						if (temp = Collision(this->mainCharacter.GetHitBoxOnCurrentAnimation(), i.GetHitBox())) {
+							break;
+						}
 					}
-				}
-				if (temp == false) {
-					this->mainCharacter.SetPosX(this->mainCharacter.GetVelocityX() + this->mainCharacter.GetPosX());
-					this->mainCharacter.SetPosY(this->mainCharacter.GetVelocityY() + this->mainCharacter.GetPosY());
+					if (temp == false) {
+						this->mainCharacter.SetPosX(this->mainCharacter.GetVelocityX() + this->mainCharacter.GetPosX());
+						this->mainCharacter.SetPosY(this->mainCharacter.GetVelocityY() + this->mainCharacter.GetPosY());
 
-				}
-				this->mainCharacter.SetVelocityX(0);
-				this->mainCharacter.SetVelocityY(0);
-			}
-			this->mainCharacter.SetActuelHitBoxOnCurrentAnimation();
-		
-			
-			for (int j = 0; j < this->allProjectile.size(); j++) {
-				bool temp = false;
-				auto & a = this->allProjectile[j];
-				a.SetAtualHitBox();
-				for (auto i : this->currentMap.GetDecor()) {
-
-					if (temp = Collision(a.GetActualHitBox(), i.GetHitBox())) {
-						this->allProjectile.erase(this->allProjectile.begin() + j);
-						--j;
-
-						break;
 					}
+					this->mainCharacter.SetVelocityX(0);
+					this->mainCharacter.SetVelocityY(0);
 				}
-				if (temp == false) {
-					string sourceProjectile = a.GetSource();
-					string type = sourceProjectile.substr(0,sourceProjectile.find(" "));     
-					
+				this->mainCharacter.SetActuelHitBoxOnCurrentAnimation();
 
-					if (type == "MainCharacter") {
-						string aura = sourceProjectile.substr(sourceProjectile.find(" ") + 1);	
-						for (auto & i : this->allEnnemies) {
-							if (temp = Collision(a.GetActualHitBox(), i.GetActualHitbox())) {
-								if (aura == i.GetAuraKil()) {
-									i.SetVie(i.GetVie() - a.GetDommage());
-									if (i.GetVie() <= 0 && i.GetisDying() == 0) {
-										i.SetDie();
+
+				for (int j = 0; j < this->allProjectile.size(); j++) {
+					bool temp = false;
+					auto & a = this->allProjectile[j];
+					a.SetAtualHitBox();
+					for (auto i : this->currentMap.GetDecor()) {
+
+						if (temp = Collision(a.GetActualHitBox(), i.GetHitBox())) {
+							this->allProjectile.erase(this->allProjectile.begin() + j);
+							--j;
+
+							break;
+						}
+					}
+					if (temp == false) {
+						string sourceProjectile = a.GetSource();
+						string type = sourceProjectile.substr(0, sourceProjectile.find(" "));
+
+
+						if (type == "MainCharacter") {
+							string aura = sourceProjectile.substr(sourceProjectile.find(" ") + 1);
+							for (auto & i : this->allEnnemies) {
+								if (temp = Collision(a.GetActualHitBox(), i.GetActualHitbox())) {
+									if (aura == i.GetAuraKil()) {
+										i.SetVie(i.GetVie() - a.GetDommage());
+										if (i.GetVie() <= 0 && i.GetisDying() == 0) {
+											i.SetDie();
+
+										}
 
 									}
-								
+									this->allProjectile.erase(this->allProjectile.begin() + j);
+									--j;
+									break;
 								}
+							}
+
+						}
+						else if (type == "Ennemies") {
+							if (temp = Collision(a.GetActualHitBox(), this->mainCharacter.GetHitBoxOnCurrentAnimation())) {
+
+
+								if (this->mainCharacter.GetVie() > 0) {
+									this->mainCharacter.SetVie(this->mainCharacter.GetVie() - a.GetDommage());
+									if (this->mainCharacter.GetVie() <= 0) {
+										this->mainCharacter.SetVie(0);
+										this->mainCharacter.SetEtatActuel("DieR");
+										this->mainCharacter.SetCanChangeAnimationn(false);
+										this->mainCharacter.SetIsDying(1);
+									}
+								}
+
 								this->allProjectile.erase(this->allProjectile.begin() + j);
 								--j;
-								break;
 							}
 						}
 
 					}
-					else if (type == "Ennemies") {
-						if (temp = Collision(a.GetActualHitBox(), this->mainCharacter.GetHitBoxOnCurrentAnimation())) {
-							this->mainCharacter.SetVie(this->mainCharacter.GetVie() - a.GetDommage());
-							this->allProjectile.erase(this->allProjectile.begin() + j);
-							--j;
-						}
+
+					if (temp == false) {
+						a.SetPosX(a.GetPosX() + a.GetSpeedX());
+						a.SetPosY(a.GetPosY() + a.GetSpeedY());
+
 					}
-					
 				}
-				
-				if (temp == false) {
-					a.SetPosX(a.GetPosX() + a.GetSpeedX());
-					a.SetPosY(a.GetPosY() + a.GetSpeedY());
 
-				}
+
+				this->SetPositionDecor();
 			}
-
+	
 			
-			this->SetPositionDecor();
 
 		}
 			break;
@@ -816,6 +862,51 @@ void WasteLands::update()
 }
 
 
+void WasteLands::DrawHp() {
+	gl::ScopedModelMatrix scpModel;
+	
+	double x ;
+	double y;
+	if (this->getWindowWidth() / 2 >= this->mainCharacter.GetPosX()) {
+
+		x = 30;
+
+
+	}
+	else if (this->currentMap.GetTextureCurrentMap()->getWidth() <= this->mainCharacter.GetPosX() + this->getWindowWidth() / 2) {
+		x = this->currentMap.GetTextureCurrentMap()->getWidth() - getWindowWidth() + 30;
+
+	}
+	else {
+		x = this->mainCharacter.GetPosX() - getWindowWidth() / 2 + 30;
+
+	}
+
+	if (this->getWindowHeight() / 2 >= this->mainCharacter.GetPosY()) {
+
+		y = 10;
+
+
+	}
+	else if (this->currentMap.GetTextureCurrentMap()->getHeight() <= this->mainCharacter.GetPosY() + this->getWindowHeight() / 2) {
+
+		y = this->currentMap.GetTextureCurrentMap()->getHeight() - this->getWindowHeight() + 10;
+	}
+	else {
+
+
+		y = this->mainCharacter.GetPosY() - getWindowHeight() / 2 + 10;
+	}
+	gl::translate(vec2(x, y));
+	
+	
+	gl::color(Color(255, 0, 0));
+	gl::drawSolidRect(Rectf(0, 0, (float)this->mainCharacter.GetVie() * 200 / this->mainCharacter.GetMaxVie(), 50));
+	gl::drawStrokedRect({ 0, 0, 200, 50 });
+	
+	gl::color(1, 1, 1, 1);
+}
+
 void WasteLands::DrawMainMap() {
 
 	
@@ -823,10 +914,15 @@ void WasteLands::DrawMainMap() {
 	gl::ScopedModelMatrix scpModel;
 	gl::translate(getWindowCenter());
 	gl::scale(vec2(this->zoom));
-
+	
 	this->SetCameraOutOfBound();
 	gl::draw(this->currentMap.GetTextureCurrentMap());
+	
 
+
+	
+
+	
 
 	Rectf size(0, 0, this->mainCharacter.GetSizeX(), this->mainCharacter.GetSizeY());
 
@@ -848,6 +944,8 @@ void WasteLands::DrawMainMap() {
 		
 	}
 
+	this->DrawHp();
+
 	//////////////////////////////DEBUG///////////////////
 
 	for (auto a : this->allEnnemies) {
@@ -861,9 +959,8 @@ void WasteLands::DrawMainMap() {
 	for (auto a : this->allProjectile) {
 		DebugDrawPolygon(a.GetActualHitBox());
 	}
-	////////////////////////////////////////////////////
 
-	this->DrawButton();
+	DebugDrawPolygon(this->mainCharacter.GetHitBoxOnCurrentAnimation());
 
 }
 

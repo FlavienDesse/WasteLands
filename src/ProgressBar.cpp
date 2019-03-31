@@ -544,7 +544,7 @@ void ProgressBar::threadSetupMapCharacterAndEnnemies(gl::ContextRef ctx)
 			}
 			else if (keyDirectoryName == "DieL") {
 				this->mainCharacter.GetAnimation()[keyDirectoryName][posAnimation].first = texture;
-
+				this->mainCharacter.GetAnimation()[keyDirectoryName][posAnimation].second = polygonEmpty;
 
 
 			}
@@ -610,7 +610,7 @@ void ProgressBar::threadSetupMapCharacterAndEnnemies(gl::ContextRef ctx)
 			}
 			else if (keyDirectoryName == "DieR") {
 				this->mainCharacter.GetAnimation()[keyDirectoryName][posAnimation].first = texture;
-
+				this->mainCharacter.GetAnimation()[keyDirectoryName][posAnimation].second = polygonEmpty;
 			}
 			else if (keyDirectoryName == "ShotR") {
 				this->mainCharacter.GetAnimation()[keyDirectoryName][posAnimation].first = texture;
