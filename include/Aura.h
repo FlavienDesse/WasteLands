@@ -28,7 +28,7 @@ public:
 	void update();
 	void ChangeAura();
 
-	string GetActualArea() { return this->actualAura; }
+	string GetActualAura() { return this->actualAura; }
 private:
 	int posAura=0;
 	map<string,vector <gl::TextureRef>> allTextureAura;

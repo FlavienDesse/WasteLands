@@ -125,3 +125,5 @@ private:
 	
 	vector<Projectile> projectile;
 };
+
+float getAngle(const vec2 & target1, const vec2 & target2);

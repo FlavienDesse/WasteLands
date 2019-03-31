@@ -69,15 +69,6 @@ void Ennemies::Update(const vec2 & posCharacter) {
 	}
 }
 
-float getAngle(const vec2 & target1 , const vec2 & target2) {
-	double angle = atan2(target1.y - target2.y, target1.x - target2.x);
-	if (angle < 0) {
-		angle += 2 * M_PI;
-	}
-	
-
-	return angle;
-}
 
 void Ennemies::SetAnimationWalk(double dx,double dy) {
 	if (this->clockAnimation.getSeconds() > (double)this->SetupDeplacementAnimation.SPEEDANIMATIONWALK / this->allAnimationWithHitBox[this->etatActual].size()) {

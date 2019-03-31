@@ -7,7 +7,6 @@
 typedef boost::geometry::model::d2::point_xy<double> point;
 typedef boost::geometry::model::polygon< point > polygon;
 
-
 #include "cinder/app/App.h"
 #include "cinder/app/RendererGl.h"
 #include "cinder/gl/gl.h"
@@ -76,6 +75,7 @@ public:
 	void keyDown(KeyEvent event) override;
 	void keyUp(KeyEvent event) override;
 	void mouseMove(MouseEvent event) override;
+	void mouseUp(MouseEvent event) override;
 	void update() override;
 	void draw() override;
 	void resize() override;
@@ -164,6 +164,18 @@ void WasteLands::ResizeButton() {
 		
 	}
 	
+}
+
+
+
+float getAngle(const vec2 & target1, const vec2 & target2) {
+	double angle = atan2(target1.y - target2.y, target1.x - target2.x);
+	if (angle < 0) {
+		angle += 2 * M_PI;
+	}
+
+
+	return angle;
 }
 
 WasteLands::WasteLands() {
@@ -303,11 +315,31 @@ void WasteLands::SetCameraOutOfBound()
 
 
 void WasteLands::mouseMove(MouseEvent event) {
-	for (auto i : this->currentMap.GetAllButton()) {
-		if (i.IsInButton(point(event.getX(), event.getY())) && i.GetActive()) {
+	switch (this->actualMap)
+	{
+	case 0:
+		for (auto i : this->currentMap.GetAllButton()) {
+			if (i.IsInButton(point(event.getX(), event.getY())) && i.GetActive()) {
 
+			}
 		}
+		break;
+	case 2:
+	{
+		double x = this->mainCharacter.GetPosX() - getWindowWidth() / 2 + event.getPos().x;
+		double y = this->mainCharacter.GetPosY() - getWindowHeight() / 2 + event.getPos().y;
+		double dx = (double)(cos(getAngle(vec2(this->mainCharacter.GetPosX(), this->mainCharacter.GetPosY()),vec2(x,y) )));
+		double dy = (double)(sin(getAngle(vec2(this->mainCharacter.GetPosX(), this->mainCharacter.GetPosY()),vec2(x,y))));
+		this->mainCharacter.SetOrientation(vec2(-dx,- dy));
 	}
+		break;
+	
+	default:
+		break;
+	}
+
+
+	
 }
 
 void WasteLands::ClickOnPlay() {
@@ -357,11 +389,26 @@ void WasteLands::mouseDown(MouseEvent event)
 			}
 		}
 		break;
+
+	case 2:
+		this->touchPressed[this->mainCharacter.GetallTouches().GetValueTouche("Shot")] = true;
+		break;
+	}
+}
+
+
+void WasteLands::mouseUp(MouseEvent event) {
+	switch (this->actualMap){
+
+	case 2:
+		this->touchPressed[this->mainCharacter.GetallTouches().GetValueTouche("Shot")] = false;
+		break;
 	}
 }
 
 void WasteLands::keyDown(KeyEvent event)
 {
+	console() << event.getCode() << endl;
 	switch (this->actualMap)
 	{
 	case 2:
@@ -375,6 +422,7 @@ void WasteLands::keyDown(KeyEvent event)
 
 		if (this->touchPressed[this->mainCharacter.GetallTouches().GetValueTouche("Shift")] && this->touchPressed[this->mainCharacter.GetallTouches().GetValueTouche("WalkR")]) {
 			this->touchPressed[this->mainCharacter.GetallTouches().GetValueTouche("RunR")] = true;
+			
 		}
 		if (this->touchPressed[this->mainCharacter.GetallTouches().GetValueTouche("Shift")] && this->touchPressed[this->mainCharacter.GetallTouches().GetValueTouche("WalkL")]) {
 			this->touchPressed[this->mainCharacter.GetallTouches().GetValueTouche("RunL")] = true;
@@ -614,7 +662,8 @@ void WasteLands::update()
 			vector <vec2> posFollowFrameEnnemi;
 			
 			bool temp;
-			this->mainCharacter.SetAnimationMainCharacter(this->touchPressed);
+			
+			this->mainCharacter.Update(this->touchPressed);
 	
 			for (int j = 0; j < this->allEnnemies.size(); j++) {
 				auto & a = this->allEnnemies[j];

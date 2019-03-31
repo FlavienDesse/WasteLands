@@ -28,11 +28,10 @@ public:
 	Personnage();
 	
 	double GetVie();
-	double GetVitesse();
-	double GetVitesseAttaque();
+
 	double GetDegat();
 	double GetArmure();
-	double GetTypeDegat();
+
 	void SetVelocityX(double velocityX);
 	void SetVelocityY(double velocityY);
 	double GetVelocityX();
@@ -47,15 +46,14 @@ public:
 	string GetEtatActuel();
 	bool GetCanChangeAnimation();
 	void SetVie(double vie);
-	void SetVitesse(double vitesse);
-	void SetVitesseAttaque(double vitesseAttaque);
+
 	void SetDegat(double degat);
 	void SetArmure(double armure);
-	void SetTypeDegat();
+
 	void SetEtatActuel(string etat);
 	void ReceiveDegat(int degat);
 	void SetActualAnimation();
-	void SetPositionActualAnimation(int pos = -1);
+
 	void SetPosX(double posX);
 	void SetPosY(double posY);
 	void SetCanChangeAnimationn(bool value);
@@ -63,21 +61,13 @@ public:
 	double GetPosY();
 	short int GetWalkJump();
 	void SetWalkJump(short int value);
-	float GetOrientation();
-	void SetOrientation(float value);
 
 	
 
-	void SetPositionWhenStopPush(std::map<int, bool> touchPressed);
-	void JumpFonction(std::map<int, bool> touchPressed);
-	bool SetStandIfWalkOpposite(std::map<int, bool> touchPressed);
-	void SetWalk(std::map<int, bool> touchPressed);
-	bool SetRun(std::map<int, bool> touchPressed);
-	bool SetWalkDiagonal(std::map<int, bool> touchPressed);
-	bool SetRunDiagonal(std::map<int, bool> touchPressed);
-	bool Attack(std::map<int, bool> touchPressed);
-	void SetAnimationMainCharacter(std::map<int, bool> touchPressed);
-	void SetCollision(bool collision);
+	
+
+
+	
 	Touches GetallTouches();
 
 	float GetSizeX();
@@ -98,16 +88,25 @@ public:
 	Aura & GetAura() { return this->aura; }
 	void  SetAura(Aura aura) {  this->aura=aura; }
 
-	
+	void SetOrientation(vec2 orientation) { this->orientation = orientation; }
+	vec2 & GetOrientation() { return this->orientation; }
 
+	void Update(std::map<int, bool> & touchPressed);
+	void SetEtatWithOrientation(std::map<int, bool>&  touchPressed);
+	void SetCurrentAnimation(std::map<int, bool>&  touchPressed);
+	void SetVelocityWalk(std::map<int, bool> & touchPressed);
+	void SetVelocityRun(std::map<int, bool>& touchPressed);
+	void SetVelocityJump(std::map<int, bool>& touchPressed);
+	void Shoot(string source, const Projectile & projectile, double orientation, vec2  & direction);
 private:
 	double vie = 100;
 	
+	vec2 orientation;
 
 	double degat = 100;
 	double armure;
 	
-	bool canChangeAnimation;
+	bool canChangeAnimation = true;
 	short int walkJump;
 	map<string, vector <pair <ci::gl::TextureRef,polygon>>> animation;
 	pair <ci::gl::TextureRef, polygon> actualAnimation;
@@ -115,9 +114,11 @@ private:
 	int positionActualAnimation =0;
 	Timer clockAnimation;
 	string etatActuel = "StandR";
+	string lastEtatActuel;
 	double posX;
 	double posY;
-	float orientation;
+	
+
 	Touches allTouches;
 	bool collision = false;
 	double velocityX=0;

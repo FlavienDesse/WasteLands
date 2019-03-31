@@ -450,7 +450,7 @@ void ProgressBar::threadSetupMapCharacterAndEnnemies(gl::ContextRef ctx)
 		int pos3 = file.u8string().find_last_of('\\', posDirectoryName - 2) + 1;
 		string key3 = file.u8string().substr(pos3, posDirectoryName - pos3 - 1);
 
-		console() << key3 << endl;
+	
 		
 		if (key == "fond.png") {
 			this->currentTextureMap = texture;
@@ -491,7 +491,10 @@ void ProgressBar::threadSetupMapCharacterAndEnnemies(gl::ContextRef ctx)
 				pos = hitBoxCharacter.find(",");
 				newProjectile.SetSizeX(stof(hitBoxCharacter.substr(0, pos)));
 				newProjectile.SetSizeY(stof(hitBoxCharacter.substr(pos + 1, hitBoxCharacter.size())));
-				
+				std::getline(fileHitBoxCharacter, hitBoxCharacter);
+				pos = hitBoxCharacter.find(",");
+				newProjectile.SetSpeedX(stof(hitBoxCharacter.substr(0, pos)));
+				newProjectile.SetSpeedY(stof(hitBoxCharacter.substr(pos + 1, hitBoxCharacter.size())));
 				std::getline(fileHitBoxCharacter, hitBoxCharacter);
 				boost::geometry::read_wkt(
 					hitBoxCharacter, polygonEmpty);
