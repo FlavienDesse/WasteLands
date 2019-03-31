@@ -414,7 +414,7 @@ void Personnage::SetEtatWithOrientation(std::map<int, bool>& touchPressed) {
 		}
 	}
 	else {
-		console() << "ERREUR" << endl;
+		
 		this->etatActuel = "StandR";
 	}
 }

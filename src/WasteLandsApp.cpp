@@ -95,7 +95,7 @@ public:
 	void DrawButton();
 
 	polygon TransformHitBoxInOneray(polygon Polygon);
-
+	void  DrawMenuDie();
 	void drawProjectile(const ci::gl::Texture2dRef &tex, const ci::vec2 &pos, const Rectf & size, float orientation);
 	void DrawHp();
 private:
@@ -133,7 +133,7 @@ void DebugDrawPolygon(polygon polygon) {
 void WasteLands::ResizeButton() {
 	for (auto & i : this->currentMap.GetAllButton()) {
 		
-
+		console() << getWindowWidth() << " " << this->currentMap.GetTextureCurrentMap()->getWidth() << endl;
 		i.SetPosX((i.GetInitialPosX() * getWindowWidth()) / this->currentMap.GetTextureCurrentMap()->getWidth());
 		i.SetPosY((i.GetInitialPosY()* getWindowHeight()) / this->currentMap.GetTextureCurrentMap()->getHeight());
 		i.SetSizeX((i.GetInitialSizeX() * getWindowWidth()) / this->currentMap.GetTextureCurrentMap()->getWidth());
@@ -193,9 +193,11 @@ void WasteLands::AttribAllImage(int pos) {
 
 			Video->play();
 		}
-
+		this->ResizeButton();
 		break;
 	case 2:
+		this->actualMap = pos;
+	
 		this->currentMap.SetAllButton(this->progressBarVar.GetAllButton());
 		if (this->progressBarVar.GetMainCharacter().GetAnimation().size() != 0) {
 			this->mainCharacter = this->progressBarVar.GetMainCharacter();
@@ -221,9 +223,10 @@ void WasteLands::AttribAllImage(int pos) {
 		}
 		this->allEnnemiesLoad = this->progressBarVar.GetEnnemiesLoad();
 		
-		this->allEnnemies.push_back(this->allEnnemiesLoad["Rose"].TransformEnnemiesLoadToEnnemies("Rose",this->allEnnemiesLoad["Rose"],600,600, &this->allProjectile,vec2(5,5),vec2(150,150),100,20));
+		//this->allEnnemies.push_back(this->allEnnemiesLoad["Rose"].TransformEnnemiesLoadToEnnemies("Rose",this->allEnnemiesLoad["Rose"],600,600, &this->allProjectile,vec2(5,5),vec2(150,150),100,20));
 		this->allEnnemies.push_back(this->allEnnemiesLoad["Rose"].TransformEnnemiesLoadToEnnemies("Rose", this->allEnnemiesLoad["Rose"], 550, 600, &this->allProjectile, vec2(5, 5), vec2(150, 150),100,20));
 		this->mainCharacter.GetAura().GetClock().start();
+		this->ResizeButton();
 		break;
 	default:
 		break;
@@ -232,7 +235,7 @@ void WasteLands::AttribAllImage(int pos) {
 	
 	
 	
-	this->ResizeButton();
+
 	
 	
 		
@@ -257,17 +260,7 @@ void WasteLands::resize() {
 
 
 	case 2:
-		this->allThingToDraw.clear();
-		for (auto i : this->currentMap.GetDecor()) {
-			TextureToDraw temp;
-
-			temp.SetDistance(boost::geometry::distance(this->TransformHitBoxInOneray(i.GetHitBoxTexture()), point(this->currentMap.GetTextureCurrentMap()->getActualWidth(), this->currentMap.GetTextureCurrentMap()->getActualHeight()*getWindowWidth())));
-			temp.SetPos(vec2(i.GetPositionX(), i.GetPositionY()));
-			temp.SetSize(Rectf(0, 0, i.GetSizeX(), i.GetSizeY()));
-			temp.SetTexture(i.GetTexture());
-			this->allThingToDraw.push_back(temp);
-		}
-
+	
 		break;
 	}
 
@@ -375,7 +368,7 @@ void WasteLands::mouseMove(MouseEvent event) {
 void WasteLands::ClickOnPlay() {
 	
 
-	this->progressBarVar.clear();
+	
 
 
 
@@ -386,7 +379,7 @@ void WasteLands::ClickOnPlay() {
 
 	this->progressBarVar.SetupMapCharacterAndEnnemies(path, "Archer",2);
 	
-	this->actualMap = 2;
+
 	this->Video->close();
 }
 void  WasteLands::ClickOnCredits() {
@@ -438,7 +431,7 @@ void WasteLands::mouseUp(MouseEvent event) {
 
 void WasteLands::keyDown(KeyEvent event)
 {
-	console() << event.getCode() << endl;
+	
 	switch (this->actualMap)
 	{
 	case 2:
@@ -979,7 +972,23 @@ void WasteLands::DrawButton() {
 	}
 	
 }
+void WasteLands::DrawMenuDie() {
+	gl::ScopedModelMatrix scpModel;
+	for (auto i : this->currentMap.GetAllButton()) {
+		Rectf sizeButton(0, 0, i.GetSizeX(), i.GetSizeY());
+		vec2 pos = vec2(i.GetPosX(), i.GetPosY());
 
+		gl::translate(pos);
+		gl::draw(i.GetTexture(), sizeButton);
+		gl::translate(-pos);
+
+
+
+	}
+	
+
+	
+}
 void WasteLands::DrawPrincipalMenu() {
 	
 	
@@ -1006,6 +1015,9 @@ void WasteLands::draw()
 			break;
 		case 2:
 			this->DrawMainMap();
+			break;
+		case 5:
+			this->DrawMenuDie();
 			break;
 		default:
 			break;

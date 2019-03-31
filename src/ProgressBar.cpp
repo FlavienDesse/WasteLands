@@ -110,16 +110,18 @@ void ProgressBar::SetupMenu(std::experimental::filesystem::v1::path & chemin,int
 
 void ProgressBar::SetupMapCharacterAndEnnemies(std::experimental::filesystem::v1::path & chemin, string classe, int pos)
 {
-
+	this->clear();
 	this->pos = pos;
-
+	std::string line;
 	mTerminated = false;
 	for (const auto &entry : fs::directory_iterator(chemin)) {
 
 
 		if (entry.path() == chemin.u8string() + "\\Button") {
 
-			fstream myfile(chemin.u8string() + "\\Button\\HitBox.txt");
+			ifstream myfile(chemin.u8string() + "\\Button\\HitBox.txt", ios::in);
+
+
 
 
 
@@ -132,27 +134,28 @@ void ProgressBar::SetupMapCharacterAndEnnemies(std::experimental::filesystem::v1
 
 				const auto &file = entry2.path();
 
-
-
 				if (is_regular_file(file) && file.extension() == ".png") {
 					Button newButton;
+					newButton.SetActive(true);
 
 
-					std::string line;
 					polygon tempPolygon;
 
 					std::getline(myfile, line);
 					int pos = line.find(",");
-
-
 
 					newButton.SetSizeInitialiseX(stof(line.substr(0, pos)));
 					newButton.SetSizeInitialiseY(stof(line.substr(pos + 1, line.size())));
 
 
 
+
+
 					std::getline(myfile, line);
+
+
 					pos = line.find(",");
+
 					newButton.SetPosInitialiseX(stof(line.substr(0, pos)));
 					newButton.SetPosInitialiseY(stof(line.substr(pos + 1, line.size())));
 
@@ -163,19 +166,21 @@ void ProgressBar::SetupMapCharacterAndEnnemies(std::experimental::filesystem::v1
 					std::getline(myfile, line);
 					boost::geometry::read_wkt(line, tempPolygon);
 					newButton.SetHitbox(tempPolygon);
-
+					newButton.SetInitialHitBox(tempPolygon);
 					std::getline(myfile, line);
 					newButton.SetType(line);
 
-					std::getline(myfile, line);
+
 
 
 					this->allButton.push_back(newButton);
 
 					tempPolygon.clear();
 					mQueue.push_back(file);
+					std::getline(myfile, line);
 
 				}
+
 
 
 			}
@@ -378,7 +383,8 @@ float ProgressBar::getProgress()
 void ProgressBar::clear() {
 	allDecor.clear();
 	allButton.clear();
-	
+	this->allEnnemies.clear();
+	this->allProjectileCharacter.clear();
 	currentTextureMap = NULL;
 }
 
