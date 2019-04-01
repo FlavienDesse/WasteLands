@@ -319,6 +319,8 @@ void WasteLands::mouseMove(MouseEvent event) {
 		break;
 	case 2:
 	{
+		
+		event.setPos(getMousePos() - getWindowPos());
 		double x;
 		double y;
 		if (this->getWindowWidth() / 2 >= this->mainCharacter.GetPosX()) {
@@ -414,7 +416,14 @@ void WasteLands::mouseDown(MouseEvent event)
 		break;
 
 	case 2:
-		this->touchPressed[this->mainCharacter.GetallTouches().GetValueTouche("Shot")] = true;
+		if (event.isRight()) {
+			this->mainCharacter.GetAura().ChangeAura();
+			
+		}
+		else if (event.isLeft()) {
+			
+			this->touchPressed[this->mainCharacter.GetallTouches().GetValueTouche("Shot")] = true;
+		}
 		break;
 	}
 }
@@ -424,7 +433,12 @@ void WasteLands::mouseUp(MouseEvent event) {
 	switch (this->actualMap){
 
 	case 2:
-		this->touchPressed[this->mainCharacter.GetallTouches().GetValueTouche("Shot")] = false;
+		
+		if (event.isLeft()) {
+			
+			this->touchPressed[this->mainCharacter.GetallTouches().GetValueTouche("Shot")] = false;
+		}
+		
 		break;
 	}
 }
@@ -681,11 +695,13 @@ void WasteLands::update()
 			break;
 		case 2:
 		{
-		
+			this->mouseMove(MouseEvent());
 			vector <vec2> posFollowFrameEnnemi;
 			
 			bool temp;
 			this->mainCharacter.Update(this->touchPressed);
+			this->mainCharacter.SetActuelHitBoxOnCurrentAnimation();
+			this->mainCharacter.GetAura().update();
 			if (this->mainCharacter.GetIsDying() == 2) {
 				this->actualMap = 5;
 			}
@@ -748,8 +764,7 @@ void WasteLands::update()
 
 				temp = false;
 
-				this->mainCharacter.SetActuelHitBoxOnCurrentAnimation();
-				this->mainCharacter.GetAura().update();
+			
 				if (this->mainCharacter.GetVelocityX() != 0 || this->mainCharacter.GetVelocityY() != 0) {
 					for (auto i : this->currentMap.GetDecor()) {
 

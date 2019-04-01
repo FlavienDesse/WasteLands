@@ -114,7 +114,7 @@ void Personnage::SetVelocityJump(std::map<int, bool>& touchPressed) {
 void Personnage::SetCurrentAnimation(std::map<int, bool>&  touchPressed) {
 
 	if (etatActuel == "WalkR" || etatActuel == "WalkTR" || etatActuel == "WalkT" || etatActuel == "WalkTL" || etatActuel == "WalkL"|| etatActuel == "WalkBL" || etatActuel == "WalkB" || etatActuel == "WalkBR") {
-		if (this->clockAnimation.getSeconds() > (double)this->SPEEDANIMATIONWALK / this->animation[this->etatActuel].size()) {
+		if (this->clockAnimation.getSeconds() > (double)this->SPEEDANIMATIONWALK / this->animation[this->etatActuel].size() || positionActualAnimation==0) {
 			this->clockAnimation.stop();
 			this->clockAnimation.start();
 			
@@ -128,7 +128,7 @@ void Personnage::SetCurrentAnimation(std::map<int, bool>&  touchPressed) {
 		}
 	}
 	else if (etatActuel == "RunR" || etatActuel == "RunTR" || etatActuel == "RunT" || etatActuel == "RunTL" || etatActuel == "RunL" || etatActuel == "RunBL" || etatActuel == "RunB" || etatActuel == "RunBR") {
-		if (this->clockAnimation.getSeconds() > (double)this->SPEEDANIMATIONRUN / this->animation[this->etatActuel].size()) {
+		if (this->clockAnimation.getSeconds() > (double)this->SPEEDANIMATIONRUN / this->animation[this->etatActuel].size() || positionActualAnimation == 0) {
 			this->clockAnimation.stop();
 			this->clockAnimation.start();
 			positionActualAnimation++;
@@ -141,7 +141,7 @@ void Personnage::SetCurrentAnimation(std::map<int, bool>&  touchPressed) {
 		}
 	}
 	else if (etatActuel == "JumpR" || etatActuel == "JumpTR" || etatActuel == "JumpT" || etatActuel == "JumpTL" || etatActuel == "JumpL" || etatActuel == "JumpBL" || etatActuel == "JumpB" || etatActuel == "JumpBR") {
-		if (this->clockAnimation.getSeconds() > (double)this->SPEEDANIMATIONJUMP/ this->animation[this->etatActuel].size()) {
+		if (this->clockAnimation.getSeconds() > (double)this->SPEEDANIMATIONJUMP/ this->animation[this->etatActuel].size() || positionActualAnimation == 0) {
 			this->clockAnimation.stop();
 			this->clockAnimation.start();
 			positionActualAnimation++;
@@ -155,7 +155,7 @@ void Personnage::SetCurrentAnimation(std::map<int, bool>&  touchPressed) {
 		}
 	}
 	else if (etatActuel == "StandR" || etatActuel == "StandTR" || etatActuel == "StandT" || etatActuel == "StandTL" || etatActuel == "StandL" || etatActuel == "StandBL" || etatActuel == "StandB" || etatActuel == "StandBR") {
-		if (this->clockAnimation.getSeconds() > (double)this->SPEEDANIMATIONSTAND / this->animation[this->etatActuel].size()) {
+		if (this->clockAnimation.getSeconds() > (double)this->SPEEDANIMATIONSTAND / this->animation[this->etatActuel].size() || positionActualAnimation == 0) {
 			this->clockAnimation.stop();
 			this->clockAnimation.start();
 			positionActualAnimation++;
@@ -165,7 +165,7 @@ void Personnage::SetCurrentAnimation(std::map<int, bool>&  touchPressed) {
 		}
 	}
 	else if (etatActuel == "ShotR" || etatActuel == "ShotTR" || etatActuel == "ShotT" || etatActuel == "ShotTL" || etatActuel == "ShotL" || etatActuel == "ShotBL" || etatActuel == "ShotB" || etatActuel == "ShotBR") {
-		if (this->clockAnimation.getSeconds() > (double)this->SPEEDANIMATIONATTACK / this->animation[this->etatActuel].size()) {
+		if (this->clockAnimation.getSeconds() > (double)this->SPEEDANIMATIONATTACK / this->animation[this->etatActuel].size() || positionActualAnimation == 0) {
 			this->clockAnimation.stop();
 			this->clockAnimation.start();
 			positionActualAnimation++;
@@ -177,7 +177,7 @@ void Personnage::SetCurrentAnimation(std::map<int, bool>&  touchPressed) {
 		}
 	}
 	else if (etatActuel == "DieR" || etatActuel == "DieL") {
-		if (this->clockAnimation.getSeconds() > (double)this->SPEEDANIMATIONDIE / this->animation[this->etatActuel].size()) {
+		if (this->clockAnimation.getSeconds() > (double)this->SPEEDANIMATIONDIE / this->animation[this->etatActuel].size() || positionActualAnimation == 0) {
 			this->clockAnimation.stop();
 			this->clockAnimation.start();
 			positionActualAnimation++;

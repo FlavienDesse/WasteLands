@@ -106,7 +106,7 @@ public:
 private:
 	double vie = 100;
 	double maxVie = 100;
-	vec2 orientation;
+	vec2 orientation{ 0,1 };
 	int isDying = 0;
 	double degat = 100;
 	double armure;
