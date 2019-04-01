@@ -90,7 +90,7 @@ public:
 	void SetOrientation(vec2 orientation) { this->orientation = orientation; }
 	vec2 & GetOrientation() { return this->orientation; }
 
-	void Update(std::map<int, bool> & touchPressed);
+	void Update(std::map<int, bool> touchPressed);
 	void SetEtatWithOrientation(std::map<int, bool>&  touchPressed);
 	void SetCurrentAnimation(std::map<int, bool>&  touchPressed);
 	void SetVelocityWalk(std::map<int, bool> & touchPressed);
@@ -103,6 +103,9 @@ public:
 
 	int GetIsDying() { return this->isDying; }
 	void SetIsDying(int isDying) { this->isDying = isDying; }
+
+	void SetInvicibility(bool invicibility) { this->invicibility = invicibility; }
+	bool  GetInvicibility() { return this->invicibility; }
 private:
 	double vie = 100;
 	double maxVie = 100;
@@ -110,7 +113,7 @@ private:
 	int isDying = 0;
 	double degat = 100;
 	double armure;
-	
+	bool invicibility = false;
 	bool canChangeAnimation = true;
 	short int walkJump;
 	map<string, vector <pair <ci::gl::TextureRef,polygon>>> animation;

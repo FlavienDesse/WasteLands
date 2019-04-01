@@ -456,6 +456,8 @@ void WasteLands::keyDown(KeyEvent event)
 		
 		int touch = event.getCode();
 		this->touchPressed[touch] = true;
+		console() << "WalkR = " << this->touchPressed[this->mainCharacter.GetallTouches().GetValueTouche("WalkR")]<< "WalkL = " << this->touchPressed[this->mainCharacter.GetallTouches().GetValueTouche("WalkL")] << endl;
+	
 
 		if (this->touchPressed[this->mainCharacter.GetallTouches().GetValueTouche("Shift")] && this->touchPressed[this->mainCharacter.GetallTouches().GetValueTouche("WalkR")]) {
 			this->touchPressed[this->mainCharacter.GetallTouches().GetValueTouche("RunR")] = true;
@@ -821,19 +823,20 @@ void WasteLands::update()
 
 						}
 						else if (type == "Ennemies") {
+							
 							if (temp = Collision(a.GetActualHitBox(), this->mainCharacter.GetHitBoxOnCurrentAnimation())) {
-
-
-								if (this->mainCharacter.GetVie() > 0) {
-									this->mainCharacter.SetVie(this->mainCharacter.GetVie() - a.GetDommage());
-									if (this->mainCharacter.GetVie() <= 0) {
-										this->mainCharacter.SetVie(0);
-										this->mainCharacter.SetEtatActuel("DieR");
-										this->mainCharacter.SetCanChangeAnimationn(false);
-										this->mainCharacter.SetIsDying(1);
+								if (this->mainCharacter.GetInvicibility() == false) {
+									if (this->mainCharacter.GetVie() > 0) {
+										this->mainCharacter.SetVie(this->mainCharacter.GetVie() - a.GetDommage());
+										if (this->mainCharacter.GetVie() <= 0) {
+											this->mainCharacter.SetVie(0);
+											this->mainCharacter.SetEtatActuel("DieR");
+											this->mainCharacter.SetCanChangeAnimationn(false);
+											this->mainCharacter.SetIsDying(1);
+										}
 									}
 								}
-
+								
 								this->allProjectile.erase(this->allProjectile.begin() + j);
 								--j;
 							}
