@@ -29,7 +29,7 @@ float  Decor::GetSizeX() {
 	return this->sizeX;
 }
 float  Decor::GetSizeY() {
-	return this->sizeX;
+	return this->sizeY;
 }
 
 void  Decor::SetTexture(TextureRef texture) {

@@ -13,7 +13,10 @@ void Map::PushAllButton(Button button) {
 	this->allButton.push_back(button);
 }
 
+void Map::clean() {
 
+	this->allDecor.clear();
+}
 
 
 

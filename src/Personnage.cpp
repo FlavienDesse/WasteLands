@@ -3,7 +3,7 @@
 #include "cinder/app/App.h"
 typedef boost::geometry::model::d2::point_xy<double> point;
 typedef boost::geometry::model::polygon< point > polygon;
-Personnage::Personnage() :allTouches(102, -12, -11, 10, -9, -5, -6, -7, -8,100, 122,113, 115, 32, -1, -2, -3, -4, 304,103) {}
+Personnage::Personnage() :allTouches(102, -12, -11, 10, -9, -5, -6, -7, -8,100, 122,113, 115, 32, -1, -2, -3, -4, 304,103,101) {}
 
 Touches Personnage::GetallTouches() {
 	return this->allTouches;
@@ -96,65 +96,61 @@ void Personnage::SetVelocityRun(std::map<int, bool>& touchPressed) {
 	}
 
 }
-void Personnage::SetVelocityJump(std::map<int, bool>& touchPressed) {
-	
+void Personnage::SetVelocityJump() {
+
+	this->SetVelocityX(this->VelocityJump.x);
+	this->SetVelocityY(this->VelocityJump.y);
+}
+void Personnage::SetWalkJump(std::map<int, bool>& touchPressed) {
 	if (touchPressed[this->allTouches.GetValueTouche("RunTR")]) {
-		this->velocityX = DEPLACEMENTRUNX;
-		this->velocityY = -DEPLACEMENTRUNY;
+		this->VelocityJump = vec2(DEPLACEMENTRUNX, -DEPLACEMENTRUNY);
+		
 	}
 	else if (touchPressed[this->allTouches.GetValueTouche("RunBL")]) {
-		this->velocityX = -DEPLACEMENTRUNX;
-		this->velocityY = DEPLACEMENTRUNY;
+		this->VelocityJump = vec2(-DEPLACEMENTRUNX, DEPLACEMENTRUNY);
 	}
 	else if (touchPressed[this->allTouches.GetValueTouche("RunTL")]) {
-		this->velocityX = -DEPLACEMENTRUNX;
-		this->velocityY = -DEPLACEMENTRUNY;
+		this->VelocityJump = vec2(-DEPLACEMENTRUNX, -DEPLACEMENTRUNY);
 	}
 	else if (touchPressed[this->allTouches.GetValueTouche("RunBR")]) {
-		this->velocityX = DEPLACEMENTRUNX;
-		this->velocityY = DEPLACEMENTRUNY;
+		this->VelocityJump = vec2(DEPLACEMENTRUNX, DEPLACEMENTRUNY);
 	}
 	else if (touchPressed[this->allTouches.GetValueTouche("RunR")]) {
-		this->velocityX = DEPLACEMENTRUNX;
+		this->VelocityJump = vec2(DEPLACEMENTRUNX,0);
 	}
 	else if (touchPressed[this->allTouches.GetValueTouche("RunB")]) {
-		this->velocityY = DEPLACEMENTRUNY;
+		this->VelocityJump = vec2(0, DEPLACEMENTRUNY);
 	}
-
 	else if (touchPressed[this->allTouches.GetValueTouche("RunT")]) {
-		this->velocityY = -DEPLACEMENTRUNY;
+		this->VelocityJump = vec2(0, -DEPLACEMENTRUNY);
 	}
 	else if (touchPressed[this->allTouches.GetValueTouche("RunL")]) {
-		this->velocityX = -DEPLACEMENTRUNX;
+		this->VelocityJump = vec2(-DEPLACEMENTRUNX, 0);
 	}
-	else 	if (touchPressed[this->allTouches.GetValueTouche("WalkTR")]) {
-		this->velocityX = DEPLACEMENTWALKX;
-		this->velocityY = -DEPLACEMENTWALKY;
+	else if (touchPressed[this->allTouches.GetValueTouche("WalkTR")]) {
+		this->VelocityJump = vec2(DEPLACEMENTWALKX, -DEPLACEMENTWALKY);
 	}
 	else if (touchPressed[this->allTouches.GetValueTouche("WalkBL")]) {
-		this->velocityX = -DEPLACEMENTWALKX;
-		this->velocityY = DEPLACEMENTWALKY;
+		this->VelocityJump = vec2(-DEPLACEMENTWALKX, DEPLACEMENTWALKY);
 	}
 	else if (touchPressed[this->allTouches.GetValueTouche("WalkTL")]) {
-		this->velocityX = -DEPLACEMENTWALKX;
-		this->velocityY = -DEPLACEMENTWALKY;
+		this->VelocityJump = vec2(-DEPLACEMENTWALKX, -DEPLACEMENTWALKY);
 	}
 	else if (touchPressed[this->allTouches.GetValueTouche("WalkBR")]) {
-		this->velocityX = DEPLACEMENTWALKX;
-		this->velocityY = DEPLACEMENTWALKY;
+		this->VelocityJump = vec2(DEPLACEMENTWALKX, DEPLACEMENTWALKY);
 	}
 	else if (touchPressed[this->allTouches.GetValueTouche("WalkR")]) {
-		this->velocityX = DEPLACEMENTWALKX;
+		this->VelocityJump = vec2(DEPLACEMENTWALKX, 0);
 	}
 	else if (touchPressed[this->allTouches.GetValueTouche("WalkB")]) {
-		this->velocityY = DEPLACEMENTWALKY;
+		this->VelocityJump = vec2(0, DEPLACEMENTWALKY);
 	}
 
 	else if (touchPressed[this->allTouches.GetValueTouche("WalkT")]) {
-		this->velocityY = -DEPLACEMENTWALKY;
+		this->VelocityJump = vec2(0, -DEPLACEMENTWALKY);
 	}
 	else if (touchPressed[this->allTouches.GetValueTouche("WalkL")]) {
-		this->velocityX = -DEPLACEMENTWALKX;
+		this->VelocityJump = vec2(-DEPLACEMENTWALKX, 0);
 	}
 }
 
@@ -174,6 +170,20 @@ void Personnage::SetCurrentAnimation(std::map<int, bool>&  touchPressed) {
 			}
 		}
 	}
+	else if (etatActuel == "HitR" || etatActuel == "HitTR" || etatActuel == "HitT" || etatActuel == "HitTL" || etatActuel == "HitL" || etatActuel == "HitBL" || etatActuel == "HitB" || etatActuel == "HitBR") {
+		if (this->clockAnimation.getSeconds() > (double)this->SPEEDANIMATIONHIT / this->animation[this->etatActuel].size() || positionActualAnimation == 0) {
+			this->clockAnimation.stop();
+			this->clockAnimation.start();
+
+			positionActualAnimation++;
+			
+			if (positionActualAnimation == this->animation[this->etatActuel].size()) {
+				positionActualAnimation = 0;
+				this->canChangeAnimation = true;
+
+			}
+		}
+	}
 	else if (etatActuel == "RunR" || etatActuel == "RunTR" || etatActuel == "RunT" || etatActuel == "RunTL" || etatActuel == "RunL" || etatActuel == "RunBL" || etatActuel == "RunB" || etatActuel == "RunBR") {
 		if (this->clockAnimation.getSeconds() > (double)this->SPEEDANIMATIONRUN / this->animation[this->etatActuel].size() || positionActualAnimation == 0) {
 			this->clockAnimation.stop();
@@ -188,15 +198,17 @@ void Personnage::SetCurrentAnimation(std::map<int, bool>&  touchPressed) {
 		}
 	}
 	else if (etatActuel == "JumpR" || etatActuel == "JumpTR" || etatActuel == "JumpT" || etatActuel == "JumpTL" || etatActuel == "JumpL" || etatActuel == "JumpBL" || etatActuel == "JumpB" || etatActuel == "JumpBR") {
+	
 		if (this->clockAnimation.getSeconds() > (double)this->SPEEDANIMATIONJUMP/ this->animation[this->etatActuel].size() || positionActualAnimation == 0) {
 			this->clockAnimation.stop();
 			this->clockAnimation.start();
 			positionActualAnimation++;
-			this->SetVelocityJump(touchPressed);
+			
+			this->SetVelocityJump();
+			
 			if (positionActualAnimation == this->animation[this->etatActuel].size()) {
 				positionActualAnimation = 0;
-				
-				this->walkJump = 0;
+				this->VelocityJump = vec2(0, 0);
 				this->canChangeAnimation = true;
 				this->invicibility = false;
 			}
@@ -217,6 +229,7 @@ void Personnage::SetCurrentAnimation(std::map<int, bool>&  touchPressed) {
 			this->clockAnimation.stop();
 			this->clockAnimation.start();
 			positionActualAnimation++;
+			this->SetVelocityWalk(touchPressed);
 			if (positionActualAnimation == this->animation[this->etatActuel].size()) {
 				positionActualAnimation = 0;
 				this->canChangeAnimation = true;
@@ -295,6 +308,7 @@ void Personnage::Update(std::map<int, bool> touchPressed) {
 		touchPressed[this->GetallTouches().GetValueTouche("RunBR")] = false;
 	}
 	if (this->canChangeAnimation == true) {
+		this->checkInviciblity();
 		this->SetEtatWithOrientation(touchPressed);
 		if (this->lastEtatActuel != this->etatActuel) {
 			this->positionActualAnimation = 0;
@@ -314,7 +328,18 @@ void Personnage::Update(std::map<int, bool> touchPressed) {
 
 }
 
-
+void Personnage::checkInviciblity(bool putInviciblity) {
+	static double time= getElapsedSeconds();
+	if (putInviciblity) {
+		this->invicibility = true;
+		time = getElapsedSeconds();
+	}
+	else {
+		if (getElapsedSeconds() - time > 1) {
+			this->invicibility = false;
+		}
+	}
+}
 void Personnage::SetEtatWithOrientation(std::map<int, bool>& touchPressed) {
 	double dx = this->orientation.x;
 	double dy = this->orientation.y;
@@ -333,7 +358,9 @@ void Personnage::SetEtatWithOrientation(std::map<int, bool>& touchPressed) {
 		if (touchPressed[this->allTouches.GetValueTouche("Jump")]) {
 			this->etatActuel = "JumpR";
 			this->invicibility = true;
+			this->SetWalkJump(touchPressed);
 			this->canChangeAnimation = false;
+
 		}
 		else if (touchPressed[this->allTouches.GetValueTouche("Shot")]) {
 			this->etatActuel = "ShotR";
@@ -354,6 +381,7 @@ void Personnage::SetEtatWithOrientation(std::map<int, bool>& touchPressed) {
 		if (touchPressed[this->allTouches.GetValueTouche("Jump")]) {
 			this->etatActuel = "JumpTR";
 			this->invicibility = true;
+			this->SetWalkJump(touchPressed);
 			this->canChangeAnimation = false;
 		}
 		else if (touchPressed[this->allTouches.GetValueTouche("Shot")]) {
@@ -374,7 +402,7 @@ void Personnage::SetEtatWithOrientation(std::map<int, bool>& touchPressed) {
 		if (touchPressed[this->allTouches.GetValueTouche("Jump")]) {
 			this->etatActuel = "JumpT";
 			this->invicibility = true;
-			
+			this->SetWalkJump(touchPressed);
 			this->canChangeAnimation = false;
 		}
 		else if (touchPressed[this->allTouches.GetValueTouche("Shot")]) {
@@ -395,7 +423,7 @@ void Personnage::SetEtatWithOrientation(std::map<int, bool>& touchPressed) {
 		if (touchPressed[this->allTouches.GetValueTouche("Jump")]) {
 			this->etatActuel = "JumpTL";
 			this->invicibility = true;
-
+			this->SetWalkJump(touchPressed);
 			this->canChangeAnimation = false;
 		}
 		else if (touchPressed[this->allTouches.GetValueTouche("Shot")]) {
@@ -417,6 +445,7 @@ void Personnage::SetEtatWithOrientation(std::map<int, bool>& touchPressed) {
 			this->etatActuel = "JumpL";
 			this->invicibility = true;
 			this->canChangeAnimation = false;
+			this->SetWalkJump(touchPressed);
 		}
 		else if (touchPressed[this->allTouches.GetValueTouche("Shot")]) {
 			this->etatActuel = "ShotL";
@@ -437,6 +466,7 @@ void Personnage::SetEtatWithOrientation(std::map<int, bool>& touchPressed) {
 			this->etatActuel = "JumpBL";
 			this->invicibility = true;
 			this->canChangeAnimation = false;
+			this->SetWalkJump(touchPressed);
 		}
 		else if (touchPressed[this->allTouches.GetValueTouche("Shot")]) {
 			this->etatActuel = "ShotBL";
@@ -457,6 +487,7 @@ void Personnage::SetEtatWithOrientation(std::map<int, bool>& touchPressed) {
 			this->etatActuel = "JumpB";
 			this->invicibility = true;
 			this->canChangeAnimation = false;
+			this->SetWalkJump(touchPressed);
 		}
 		else if (touchPressed[this->allTouches.GetValueTouche("Shot")]) {
 			this->etatActuel = "ShotB";
@@ -477,6 +508,7 @@ void Personnage::SetEtatWithOrientation(std::map<int, bool>& touchPressed) {
 			this->etatActuel = "JumpBR";
 			this->invicibility = true;
 			this->canChangeAnimation = false;
+			this->SetWalkJump(touchPressed);
 		}
 		else if (touchPressed[this->allTouches.GetValueTouche("Shot")]) {
 			this->etatActuel = "ShotBR";

@@ -51,6 +51,9 @@ public:
 
 	void SetHitboxTexture(polygon hitBoxTexture) { this->hitBoxTexture = hitBoxTexture; }
 	polygon GetHitBoxTexture() { return this->hitBoxTexture; }
+
+	bool GetCollisionWithDecor() { return this->collisionWithDecor; }
+	void SetCollisionithDecor(bool collisionWithDecor) { this->collisionWithDecor = collisionWithDecor; }
 private:
 	TextureRef texture;
 	polygon hitbox;
@@ -58,6 +61,8 @@ private:
 
 	int positionX;
 	int positionY;
+
+	bool collisionWithDecor;
 
 	float sizeX;
 	float sizeY;

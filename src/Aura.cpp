@@ -15,20 +15,24 @@ void Aura::update() {
 	}
 }
 void Aura::ChangeAura() {
-	if (this->actualAura == "Gris") {
+	if (this->actualAura == "Rouge") {
 		posAura = 0;
 		this->actualAura = "Vert";
 	}
 	else if (this->actualAura == "Vert") {
 		posAura = 0;
-		this->actualAura = "Noir";
+		this->actualAura = "Bleu";
 	}
-	else if (this->actualAura == "Noir") {
+	else if (this->actualAura == "Bleu") {
 		posAura = 0;
 		this->actualAura = "Jaune";
 	}
 	else if (this->actualAura == "Jaune") {
 		posAura = 0;
-		this->actualAura = "Gris";
+		this->actualAura = "Noir";
+	}
+	else if (this->actualAura == "Noir") {
+		posAura = 0;
+		this->actualAura = "Rouge";
 	}
 }

@@ -62,7 +62,7 @@ public:
 	
 
 	
-
+	void checkInviciblity(bool putInviciblity = false);
 	
 
 
@@ -95,7 +95,8 @@ public:
 	void SetCurrentAnimation(std::map<int, bool>&  touchPressed);
 	void SetVelocityWalk(std::map<int, bool> & touchPressed);
 	void SetVelocityRun(std::map<int, bool>& touchPressed);
-	void SetVelocityJump(std::map<int, bool>& touchPressed);
+	void SetWalkJump(std::map<int, bool>& touchPressed);
+	void SetVelocityJump();
 	void Shoot(string source, const Projectile & projectile, double orientation, vec2  & direction);
 
 	void SetMaxVie(double maxVie) { this->maxVie = maxVie; }
@@ -106,6 +107,7 @@ public:
 
 	void SetInvicibility(bool invicibility) { this->invicibility = invicibility; }
 	bool  GetInvicibility() { return this->invicibility; }
+		
 private:
 	double vie = 100;
 	double maxVie = 100;
@@ -115,7 +117,7 @@ private:
 	double armure;
 	bool invicibility = false;
 	bool canChangeAnimation = true;
-	short int walkJump;
+	
 	map<string, vector <pair <ci::gl::TextureRef,polygon>>> animation;
 	pair <ci::gl::TextureRef, polygon> actualAnimation;
 	string classe;
@@ -126,7 +128,7 @@ private:
 	double posX;
 	double posY;
 	
-
+	vec2 VelocityJump;
 	Touches allTouches;
 	bool collision = false;
 	double velocityX=0;
@@ -140,21 +142,22 @@ private:
 
 	Aura aura;
 	
-	float DEPLACEMENTWALKX = 5;
-	float DEPLACEMENTWALKY = 5;
-	float DEPLACEMENTJUMPWALKX = 20;
-	float DEPLACEMENTJUMPWALKY = 20;
-	float DEPLACEMENTJUMPRUNX = 25;
-	float DEPLACEMENTJUMPRUNY = 25;
-	float DEPLACEMENTRUNX = 15;
-	float DEPLACEMENTRUNY = 15;
+	double DEPLACEMENTWALKX = 5;
+	double DEPLACEMENTWALKY = 5;
+	double DEPLACEMENTJUMPWALKX = 20;
+	double DEPLACEMENTJUMPWALKY = 20;
+	double DEPLACEMENTJUMPRUNX = 25;
+	double DEPLACEMENTJUMPRUNY = 25;
+	double DEPLACEMENTRUNX = 15;
+	double DEPLACEMENTRUNY = 15;
 
-	float SPEEDANIMATIONSTAND = 0.55;
-	float SPEEDANIMATIONWALK = 0.40;
-	float SPEEDANIMATIONJUMP = 0.50;
-	float SPEEDANIMATIONRUN = 0.50;
-	float SPEEDANIMATIONATTACK = 0.005;
-	float SPEEDANIMATIONDIE = 1;
+	double SPEEDANIMATIONSTAND = 0.55;
+	double SPEEDANIMATIONWALK = 0.40;
+	double SPEEDANIMATIONJUMP = 0.50;
+	double SPEEDANIMATIONRUN = 0.50;
+	double SPEEDANIMATIONATTACK = 0.20;
+	double SPEEDANIMATIONHIT= 0.50;
+	double SPEEDANIMATIONDIE = 1;
 };
 
 

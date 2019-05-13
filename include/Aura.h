@@ -32,7 +32,7 @@ public:
 private:
 	int posAura=0;
 	map<string,vector <gl::TextureRef>> allTextureAura;
-	string actualAura = "Gris";
+	string actualAura = "Bleu";
 	Timer animationClock;
 
 	double SPEEDANIMATIONAURA =0.5;

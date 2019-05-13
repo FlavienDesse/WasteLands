@@ -93,9 +93,17 @@ void ProgressBar::SetupMenu(std::experimental::filesystem::v1::path & chemin,int
 			
 			
 		}
+		
 
 	}
+	
+	for (const auto& entry2 : fs::directory_iterator(getAssetDirectories()[0].u8string() + "\\Audio")) {
+		mQueue.push_back(entry2.path());
+	}
 
+
+
+		
 	// Count the files.
 	mCount = mQueue.size();
 
@@ -108,8 +116,12 @@ void ProgressBar::SetupMenu(std::experimental::filesystem::v1::path & chemin,int
 }
 
 
-void ProgressBar::SetupMapCharacterAndEnnemies(std::experimental::filesystem::v1::path & chemin, string classe, int pos)
+
+
+void ProgressBar::SetupMap(std::experimental::filesystem::v1::path & chemin, int pos)
 {
+
+
 	this->clear();
 	this->pos = pos;
 	std::string line;
@@ -214,7 +226,7 @@ void ProgressBar::SetupMapCharacterAndEnnemies(std::experimental::filesystem::v1
 
 					newDec.SetSizeX(stof(line.substr(0, pos)));
 					newDec.SeSizeY(stof(line.substr(pos + 1, line.size())));
-
+				
 
 					std::getline(myfile, line);
 					pos = line.find(",");
@@ -232,6 +244,105 @@ void ProgressBar::SetupMapCharacterAndEnnemies(std::experimental::filesystem::v1
 					std::getline(myfile, line);
 					boost::geometry::read_wkt(line, tempPolygon);
 					newDec.SetHitboxTexture(tempPolygon);
+
+					std::getline(myfile, line);
+
+					newDec.SetCollisionithDecor(stof(line));
+
+					this->allDecor.push_back(newDec);
+
+					tempPolygon.clear();
+					mQueue.push_back(entry2.path());
+
+					std::getline(myfile, line);
+				}
+
+			}
+			myfile.close();
+		}
+		else if (entry.path().u8string() == chemin.u8string() + "\\fond.png") {
+			const auto &file = entry.path();
+			if (is_regular_file(file) && file.extension() == ".png")
+			{
+
+				mQueue.push_back(file);
+			}
+
+		}
+
+
+	}
+	mCount = mQueue.size();
+
+	// Now create a shared OpenGL context, that we use to load and create textures on a background thread.
+	gl::ContextRef backgroundCtx = gl::Context::create(gl::context());
+
+	// Create our background thread, which will load the images in the queue.
+
+	mThread = std::make_unique<std::thread>(std::bind(&ProgressBar::threadSetupMapCharacterEnnemiesDiversAndDialogue, this, backgroundCtx));
+}
+
+void ProgressBar::SetupMapCharacterEnnemiesDiversAndDialogue(std::experimental::filesystem::v1::path & chemin, string classe, int pos)
+{
+	this->clear();
+	this->pos = pos;
+	std::string line;
+	mTerminated = false;
+	for (const auto &entry : fs::directory_iterator(chemin)) {
+
+
+		if (entry.path() == chemin.u8string() + "\\Decor") {
+			fstream myfile(chemin.u8string() + "\\Decor\\HitBox.txt");
+			
+			for (const auto &entry2 : fs::directory_iterator(entry.path())) {
+				
+				const auto &file = entry2.path();
+
+
+
+
+
+
+				if (is_regular_file(file) && file.extension() == ".png") {
+					Decor newDec;
+
+
+
+
+					std::string line;
+					polygon tempPolygon;
+
+					std::getline(myfile, line);
+					int pos = line.find(",");
+
+
+
+					newDec.SetSizeX(stof(line.substr(0, pos)));
+					newDec.SeSizeY(stof(line.substr(pos + 1, line.size())));
+					
+
+					std::getline(myfile, line);
+					pos = line.find(",");
+					newDec.SetPositionX(stof(line.substr(0, pos)));
+					newDec.SetPositionY(stof(line.substr(pos + 1, line.size())));
+
+
+
+
+
+					std::getline(myfile, line);
+					boost::geometry::read_wkt(line, tempPolygon);
+					newDec.SetHitbox(tempPolygon);
+
+					std::getline(myfile, line);
+					boost::geometry::read_wkt(line, tempPolygon);
+					newDec.SetHitboxTexture(tempPolygon);
+
+
+					std::getline(myfile, line);
+					
+					newDec.SetCollisionithDecor(stof(line));
+
 
 
 					this->allDecor.push_back(newDec);
@@ -354,8 +465,119 @@ void ProgressBar::SetupMapCharacterAndEnnemies(std::experimental::filesystem::v1
 	}
 
 
+	for (const auto &entry : fs::directory_iterator(getAssetDirectories()[0].u8string() + "\\Dialogue")) {
+		int a= 0;
+	
+		extension = GetFileExtension(entry.path().u8string());
+		if (extension == "png" || extension == "jpg") {
+	
+			mQueue.push_back(entry.path());
+
+
+		}
+	
+	}
+
+	for (const auto &entry : fs::directory_iterator(getAssetDirectories()[0].u8string() + "\\Divers")) {
+		
+		posDirectory = entry.path().u8string().find_last_of('\\') + 1;
+		key = entry.path().u8string().substr(posDirectory, entry.path().u8string().size());
+		if (key == "Barre HP") {
+			
+			for (const auto &entry1 : std::experimental::filesystem::v1::directory_iterator(entry.path())) {
+				extension = GetFileExtension(entry1.path().u8string());
+				if (extension == "png" || extension == "jpg") {
+					mQueue.push_back(entry1.path());
+					
+
+				}
+			}
+		}
+		else {
+			extension = GetFileExtension(entry.path().u8string());
+			if (extension == "png" || extension == "jpg") {
+				mQueue.push_back(entry.path());
+
+
+			}
+		}
+		
+	}
+		
+	for (const auto &entry : fs::directory_iterator(getAssetDirectories()[0].u8string() + "\\Map\\MenuMort")) {
+		
+		if (entry.path() == getAssetDirectories()[0].u8string() + "\\Map\\MenuMort\\Button") {
+			
+			ifstream myfile(entry.path().u8string()+"\\HitBox.txt", ios::in);
+
 			
 
+
+
+
+
+			for (const auto &entry2 : fs::directory_iterator(entry.path())) {
+
+
+
+
+				const auto &file = entry2.path();
+
+				if (is_regular_file(file) && file.extension() == ".png") {
+					Button newButton;
+					newButton.SetActive(true);
+
+
+					polygon tempPolygon;
+
+					std::getline(myfile, line);
+					int pos = line.find(",");
+
+					newButton.SetSizeInitialiseX(stof(line.substr(0, pos)));
+					newButton.SetSizeInitialiseY(stof(line.substr(pos + 1, line.size())));
+
+
+
+
+
+					std::getline(myfile, line);
+
+
+					pos = line.find(",");
+
+					newButton.SetPosInitialiseX(stof(line.substr(0, pos)));
+					newButton.SetPosInitialiseY(stof(line.substr(pos + 1, line.size())));
+
+
+
+
+
+					std::getline(myfile, line);
+					boost::geometry::read_wkt(line, tempPolygon);
+					newButton.SetHitbox(tempPolygon);
+					newButton.SetInitialHitBox(tempPolygon);
+					std::getline(myfile, line);
+					newButton.SetType(line);
+
+
+
+
+					this->allButton.push_back(newButton);
+
+					tempPolygon.clear();
+					mQueue.push_back(file);
+					std::getline(myfile, line);
+
+				}
+
+
+
+			}
+			myfile.close();
+		}
+
+	}
+	
 	// Count the files.
 	mCount = mQueue.size();
 
@@ -364,7 +586,7 @@ void ProgressBar::SetupMapCharacterAndEnnemies(std::experimental::filesystem::v1
 
 	// Create our background thread, which will load the images in the queue.
 
-	mThread = std::make_unique<std::thread>(std::bind(&ProgressBar::threadSetupMapCharacterAndEnnemies, this, backgroundCtx));
+	mThread = std::make_unique<std::thread>(std::bind(&ProgressBar::threadSetupMapCharacterEnnemiesDiversAndDialogue, this, backgroundCtx));
 }
 
 float ProgressBar::getProgress()
@@ -385,6 +607,9 @@ void ProgressBar::clear() {
 	allButton.clear();
 	this->allEnnemies.clear();
 	this->allProjectileCharacter.clear();
+	this->allAudio.clear();
+	this->diversTexture.clear();
+
 	currentTextureMap = NULL;
 }
 
@@ -401,7 +626,7 @@ void ProgressBar::clean()
 	mThread.reset();
 }
 
-void ProgressBar::threadSetupMapCharacterAndEnnemies(gl::ContextRef ctx)
+void ProgressBar::threadSetupMapCharacterEnnemiesDiversAndDialogue(gl::ContextRef ctx)
 {
 
 	
@@ -462,13 +687,36 @@ void ProgressBar::threadSetupMapCharacterAndEnnemies(gl::ContextRef ctx)
 			this->currentTextureMap = texture;
 		}
 		else if (keyDirectoryName == "Button") {
+			if (key3 == "MenuMort") {
+				texture->setLabel("MenuMort");
+			}
 			this->allButton[numberButton].SetTexture(texture);
 			numberButton++;
+			
 		}
 		else if (keyDirectoryName == "Decor") {
-			this->allDecor[numberDecor].SetTexture(texture);
 			
+			this->allDecor[numberDecor].SetTexture(texture);
 			numberDecor++;
+		}
+		else if (keyDirectoryName == "Dialogue") {
+			
+			this->allDialogue[key.substr(0, key.size() - 4)] = texture;
+		
+			
+		}
+		else if (keyDirectoryName == "Barre HP") {
+			
+			this->diversTexture[key.substr(0, key.size() - 4)] = texture;
+
+
+		}
+		else if (keyDirectoryName == "Divers") {
+
+			
+			this->diversTexture[key.substr(0, key.size() - 4)] = texture;
+
+
 		}
 		else if (key3 == "Aura") {
 			this->mainCharacter.GetAura().GetAllTextureAura()[keyDirectoryName].push_back(texture);
@@ -562,6 +810,14 @@ void ProgressBar::threadSetupMapCharacterAndEnnemies(gl::ContextRef ctx)
 				this->mainCharacter.GetAnimation()["ShotBL"][posAnimation].first = texture;
 				this->mainCharacter.GetAnimation()["ShotBL"][posAnimation].second = polygonEmpty;
 			}
+			else if (keyDirectoryName == "HitL") {
+				 this->mainCharacter.GetAnimation()[keyDirectoryName][posAnimation].first = texture;
+				 this->mainCharacter.GetAnimation()[keyDirectoryName][posAnimation].second = polygonEmpty;
+
+				 this->mainCharacter.GetAnimation()["HitBL"].push_back(pairEmpty);
+				 this->mainCharacter.GetAnimation()["HitBL"][posAnimation].first = texture;
+				 this->mainCharacter.GetAnimation()["HitBL"][posAnimation].second = polygonEmpty;
+			 }
 
 			else if (keyDirectoryName == "StandR") {
 				this->mainCharacter.GetAnimation()[keyDirectoryName][posAnimation].first = texture;
@@ -629,6 +885,18 @@ void ProgressBar::threadSetupMapCharacterAndEnnemies(gl::ContextRef ctx)
 				this->mainCharacter.GetAnimation()["ShotB"].push_back(pairEmpty);
 				this->mainCharacter.GetAnimation()["ShotB"][posAnimation].first = texture;
 				this->mainCharacter.GetAnimation()["ShotB"][posAnimation].second = polygonEmpty;
+			}
+			else if (keyDirectoryName == "HitR") {
+				this->mainCharacter.GetAnimation()[keyDirectoryName][posAnimation].first = texture;
+				this->mainCharacter.GetAnimation()[keyDirectoryName][posAnimation].second = polygonEmpty;
+
+				this->mainCharacter.GetAnimation()["HitBR"].push_back(pairEmpty);
+				this->mainCharacter.GetAnimation()["HitBR"][posAnimation].first = texture;
+				this->mainCharacter.GetAnimation()["HitBR"][posAnimation].second = polygonEmpty;
+
+				this->mainCharacter.GetAnimation()["HitB"].push_back(pairEmpty);
+				this->mainCharacter.GetAnimation()["HitB"][posAnimation].first = texture;
+				this->mainCharacter.GetAnimation()["HitB"][posAnimation].second = polygonEmpty;
 			}
 
 			else if (keyDirectoryName == "WalkTR") {
@@ -711,7 +979,7 @@ void ProgressBar::threadSetupMapCharacterAndEnnemies(gl::ContextRef ctx)
 			polygonEmpty.clear();
 			}
 			}
-		else if (key3 == "Rose") {
+		else if (key3 == "Rose" || key3=="BossFactory" || key3 == "Livre" || key3 == "Bouteille") {
 		
 			if (lastKey != keyDirectoryName) {
 				fileHitBoxCharacter.close();
@@ -773,6 +1041,7 @@ void ProgressBar::threadSetupMenu(gl::ContextRef ctx)
 	int numberButton = 0;
 	
 	TextureRef texture;
+	SourceFileRef audioSource;
 	// Now load all images one by one.
 	while (!mTerminated) {
 		// Let's first wait a little, making it easier to see how it works.
@@ -799,8 +1068,15 @@ void ProgressBar::threadSetupMenu(gl::ContextRef ctx)
 		// We're done with the queue, so we can release our lock now.
 		lockQueue.unlock();
 
-		if (key != "Video.mp4") {
-			texture = gl::Texture::create(loadImage(file));
+		if (key != "Video.mp4" ) {
+			if (keyDirectoryName == "Audio") {
+
+				audioSource = load(loadAsset("\\Audio\\"+key));
+			}
+			else {
+				texture = gl::Texture::create(loadImage(file));
+			}
+			
 		}
 		
 		
@@ -825,6 +1101,9 @@ void ProgressBar::threadSetupMenu(gl::ContextRef ctx)
 		else if (keyDirectoryName == "Button") {
 			this->allButton[numberButton].SetTexture(texture);
 			numberButton++;
+		}
+		else if (keyDirectoryName == "Audio") {
+			this->allAudio[key.substr(0,key.size()-4)] = audioSource;
 		}
 		else if (key == "Video.mp4") {
 			

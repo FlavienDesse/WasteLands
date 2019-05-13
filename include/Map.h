@@ -28,25 +28,21 @@ public:
 	
 
 
-	void PushBackAllTexturePositionFront(int i);
-	void PushBackAllTexturePositionBack(int i);
+
 
 	
 
 	void PushAllButton(Button button);
 
-	void ClearAllTexturePositionFront();
-	void ClearAllTexturePositionBack();
-
+	
 	
 	void SetcurrentTextureMap(TextureRef currentTextureMap) { this->currentTextureMap = currentTextureMap;}
 	vector <Button> & GetAllButton() { return  this->allButton; }
 	void SetAllButton(vector <Button> allButton) {this->allButton = allButton;}
+	void clean();
 private:
 	TextureRef currentTextureMap;
 	vector <Decor> allDecor;
-	vector <int> allTexturePositionFront;
-	vector <int> allTexturePositionBack;
 	vector <Button> allButton;
 
 	

@@ -8,6 +8,8 @@
 #include <boost/geometry.hpp>
 #include <boost/geometry/geometries/point_xy.hpp>
 #include <boost/geometry/geometries/polygon.hpp>
+#include <vector>
+#include <map>
 
 typedef boost::geometry::model::d2::point_xy<double> point;
 typedef boost::geometry::model::polygon< point > polygon;
@@ -33,11 +35,11 @@ public:
 	double GetDommage() { return this->dommage; }
 	void SetDommage(double dommage) { this->dommage = dommage; }
 
-	int  GetSpeedX() { return this->speedX; }
-	void SetSpeedX(int  speedX) { this->speedX= speedX; }
+	double  GetSpeedX() { return this->speedX; }
+	void SetSpeedX(double  speedX) { this->speedX= speedX; }
 
-	int  GetSpeedY() { return this->speedY; }
-	void SetSpeedY(int  speedY) { this->speedY = speedY; }
+	double  GetSpeedY() { return this->speedY; }
+	void SetSpeedY(double  speedY) { this->speedY = speedY; }
 
 	double GetPosX() { return this->posX; }
 	void SetPosX(double posX) { this->posX = posX; }
@@ -59,6 +61,9 @@ public:
 
 	double GetStartTime() { return this->startTime; }
 	void SetStartTime(double startTime) { this->startTime = startTime; }
+
+	int GetIteration() { return this->iteration; }
+	void SetIteration() { this->iteration++; }
 private:
 	TextureRef texture;
 	polygon hitBox;
@@ -66,8 +71,8 @@ private:
 	string source;
 	double dommage;
 
-	int speedX;
-	int speedY;
+	double speedX;
+	double speedY;
 
 	double posX;
 	double posY;
@@ -78,6 +83,9 @@ private:
 	double orientation;
 
 	double startTime ;
+
+	int iteration = 0;
+
 };
 
 #endif

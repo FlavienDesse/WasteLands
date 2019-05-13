@@ -13,18 +13,22 @@
 #include "ciWMFVideoPlayer.h"
 #include "Projectile.h"
 #include "Ennemies.h"
+#include "Dialogue.h"
+#include "cinder\audio\audio.h"
+#include "cinder\audio\Node.h"
+#include "cinder\audio\Context.h"
 using namespace ci;
 using namespace app;
 using namespace std;
 using namespace gl;
-
+using namespace audio;
 class ProgressBar
 {
 public:
 	ProgressBar();
 	void SetupMenu(std::experimental::filesystem::v1::path & chemin,int pos);
-	void SetupMapCharacterAndEnnemies(std::experimental::filesystem::v1::path & chemin, string classe, int pos);
-	
+	void SetupMapCharacterEnnemiesDiversAndDialogue(std::experimental::filesystem::v1::path & chemin, string classe, int pos);
+	void SetupMap(std::experimental::filesystem::v1::path & chemin,int pos);
 	bool GetTerminated() { return this->mTerminated; }
 
 	float getProgress();
@@ -44,9 +48,13 @@ public:
 	int GetPos() { return this->pos; }
 	map<string, Ennemiesload> GetEnnemiesLoad() { return this->allEnnemies; }
 	vector<Projectile> GetAllProjectileCharacter() { return this->allProjectileCharacter; }
+	map <string, SourceFileRef> GetSound() { return this->allAudio; }
+	map <string, TextureRef> GetallDialogue() { return this->allDialogue; }
+	map<string, TextureRef>  GetDivers() { return this->diversTexture; }
+	
 private:
 	void threadSetupMenu(gl::ContextRef ctx);
-	void threadSetupMapCharacterAndEnnemies(gl::ContextRef ctx);
+	void threadSetupMapCharacterEnnemiesDiversAndDialogue(gl::ContextRef ctx);
 
 	std::unique_ptr<std::thread>  mThread;             
 	size_t                        mCount{ 0 };         
@@ -62,7 +70,11 @@ private:
 	vector <Decor> allDecor;
 	vector <Button> allButton;
 	vector <Projectile> allProjectileCharacter;
+	map <string,TextureRef> allDialogue;
+	map <string, SourceFileRef> allAudio;
 	ciWMFVideoPlayer Video;
+	map<string, TextureRef> diversTexture;
+	
 	bool loadedMovie;
 	int pos = 0;
 };
