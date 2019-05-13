@@ -5,3 +5,5 @@ The goal is to use the auras to kill the corresponding enemies, for example the 
 The game folder is in CINDER \ MyProject
 
 To start playing you have to go to the end of the road on the right and press E
+
+To install the game you have to compile cinder and create a MyProject directory in Cinder and git clone
