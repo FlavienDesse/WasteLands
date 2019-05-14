@@ -14,7 +14,7 @@ To install the game you have to compile cinder and the game and create a MyProje
 
 z , Q , S , D to move
 
-Space allow a fram of inviciblity
+Space allow a frame of inviciblity
 
 Shoot with left click
 
