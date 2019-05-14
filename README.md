@@ -6,4 +6,4 @@ The game folder is in CINDER \ MyProject
 
 To start playing you have to go to the end of the road on the right and press E
 
-To install the game you have to compile cinder and create a MyProject directory in Cinder and git clone
+To install the game you have to compile cinder and the game and create a MyProject directory in Cinder and git clone in this directory
