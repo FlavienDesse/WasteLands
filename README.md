@@ -26,6 +26,10 @@ Left Shift sprint
 
 Press play and you have to go to the end of the road on the right and press E, you must have the right aura to kill the enemies, exemple  : to kill rose you must use the red aura.
 
+### Trailer :
+
+https://www.youtube.com/watch?v=4r2sbPQCpHc&feature=youtu.be
+
 #### Source
 
 music : Wontolla - Lighter Than Air
